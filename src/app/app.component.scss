@@ -87,3 +87,7 @@
     position: relative; // Required for z-index to work
     z-index: 5; // Higher than booking-container's z-index: 4
   }
+
+  .test-container {
+    margin-top: 120px;
+  }

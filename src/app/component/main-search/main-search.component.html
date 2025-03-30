@@ -1,10 +1,26 @@
-<div *ngIf="!isLoading">
-    <div *ngFor="let user of users" class="user-card">
-      <p>{{ user.first_name }} {{user.last_name}}</p>
-      <!-- <p>Email: {{ user.email }}</p> -->
-    </div>
+<div class="location-group">
+  <div class="location-container">
+    <mat-form-field>
+      <mat-label>From</mat-label>
+      <input matInput
+            [value]="displayFromValue"
+            placeholder="Select Origin"
+            readonly
+            (click)="handleFromClick()"
+            class="origin-input">
+    </mat-form-field>
   </div>
-  
-  <div *ngIf="isLoading">
-    Loading users...
+  <div class="location-container">
+    <mat-form-field>
+      <mat-label>To</mat-label>
+      <input matInput
+            [value]="displayToValue"
+            placeholder="Select Destination"
+            readonly
+            (click)="handleFromClick()"
+            class="origin-input">
+    </mat-form-field>
   </div>
+
+  <app-location-popup></app-location-popup>
+</div>
