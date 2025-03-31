@@ -22,6 +22,8 @@ import {LocationPopupComponent} from '../location-popup/location-popup.component
 export class MainSearchComponent {
   selectedFrom: string | null = null;
   selectedTo: string | null = null;
+  showFromPopup = false;
+  showToPopup = false;
 
   get displayFromValue(): string {
     return this.selectedFrom || 'Select Origin';
@@ -32,7 +34,22 @@ export class MainSearchComponent {
   }
 
   handleFromClick(): void {
-    // TODO: Implement country/city selection logic here
-    console.log('Open country selection dialog');
+    this.showFromPopup = true;
+    this.showToPopup = false;
+  }
+
+  handleToClick(): void {
+    this.showToPopup = true;
+    this.showFromPopup = false;
+  }
+
+  handleLocationSelected(location: string, type: 'from' | 'to'): void {
+    if (type === 'from') {
+      this.selectedFrom = location;
+      this.showFromPopup = false;
+    } else {
+      this.selectedTo = location;
+      this.showToPopup = false;
+    }
   }
 }

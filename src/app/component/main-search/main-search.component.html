@@ -1,4 +1,5 @@
 <div class="location-group">
+  <!-- From Section -->
   <div class="location-container">
     <mat-form-field>
       <mat-label>From</mat-label>
@@ -9,7 +10,14 @@
             (click)="handleFromClick()"
             class="origin-input">
     </mat-form-field>
+    <div *ngIf="showFromPopup">
+      <app-location-popup 
+        (locationSelected)="handleLocationSelected($event, 'from')">
+      </app-location-popup>
+    </div>
   </div>
+
+  <!-- To Section -->
   <div class="location-container">
     <mat-form-field>
       <mat-label>To</mat-label>
@@ -17,10 +25,13 @@
             [value]="displayToValue"
             placeholder="Select Destination"
             readonly
-            (click)="handleFromClick()"
+            (click)="handleToClick()"
             class="origin-input">
     </mat-form-field>
+    <div *ngIf="showToPopup">
+      <app-location-popup
+        (locationSelected)="handleLocationSelected($event, 'to')">
+      </app-location-popup>
+    </div>
   </div>
-
-  <app-location-popup></app-location-popup>
 </div>

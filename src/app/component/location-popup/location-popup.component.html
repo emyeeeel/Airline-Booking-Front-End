@@ -14,7 +14,11 @@
           
           <ul *ngIf="expandedCountries.has(country.id)" class="city-list">
             <li *ngFor="let city of country.cities" class="city-item">
-              <a href="#" class="city-link">{{ city.name }}</a>
+              <a href="#" 
+                 class="city-link"
+                 (click)="selectCity(city.name); $event.preventDefault()">
+                {{ city.name }}
+              </a>
             </li>
           </ul>
         </li>
