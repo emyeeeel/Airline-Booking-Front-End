@@ -22,6 +22,9 @@
     <div class="test-container">
       <app-main-search></app-main-search>
     </div>
+    <div *ngIf="user">
+      Welcome, {{ user.firstName }} {{ user.lastName }}!
+    </div>
   </main>
   
   

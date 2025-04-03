@@ -218,6 +218,28 @@ header {
   }
 }
 
+.login-group {
+  .user-initials {
+    width: 24px;
+    height: 24px;
+    background-color: #FFD700; // Yellow color
+    color: #006FC1; // Blue color
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    
+    // Keep colors consistent on header hover
+    .header:hover & {
+      background-color: #FFD700;
+      color: #006FC1;
+    }
+  }
+}
+
 :host {
   display: block;
   position: relative;

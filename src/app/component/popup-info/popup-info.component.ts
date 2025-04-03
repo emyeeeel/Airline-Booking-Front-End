@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 
 @Component({
@@ -11,11 +12,24 @@ import { Router } from '@angular/router';
   styleUrl: './popup-info.component.scss'
 })
 export class PopupInfoComponent {
+  user: any;
+    
+  constructor(
+      private router: Router, 
+      public authService: AuthService // Changed to public to access in template
+  ) {
+      this.user = this.authService.getCurrentUser();
+  }
+
+  // Add logout method
+  logout() {
+      this.authService.logout();
+      this.router.navigate(['/landing']); // Or redirect to home page
+  }
+
   @Input() currentMenu: string = '';
-
-  constructor(private router: Router){}
-
-  navigateToLogin(){
-    this.router.navigate(['/login']);
+  
+  navigateToLogin() {
+      this.router.navigate(['/login']);
   }
 }

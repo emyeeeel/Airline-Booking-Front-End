@@ -5,15 +5,41 @@ import { MainSearchComponent } from '../../component//main-search/main-search.co
 import { DatePickerComponent } from '../../component//date-picker/date-picker.component';
 import { SearchFlightButtonComponent } from '../../component//search-flight-button/search-flight-button.component';
 import { DestinationPickerComponent } from '../../component/destination-picker/destination-picker.component';
+import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 
 @Component({
   selector: 'app-landing-page',
-  imports: [RouterOutlet, HeaderComponent, MainSearchComponent, DatePickerComponent, SearchFlightButtonComponent, DestinationPickerComponent],
+  imports: [RouterOutlet, HeaderComponent, MainSearchComponent, DatePickerComponent, SearchFlightButtonComponent, DestinationPickerComponent, CommonModule],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss'
 })
 export class LandingPageComponent implements OnInit, OnDestroy {
+
+  user: any;
+  private userSubscription!: Subscription;
+
+  constructor(private authService: AuthService) {}
+
+  ngOnInit() {
+    this.startCarousel();
+    this.preloadImages();
+    
+    // Subscribe to authentication changes
+    this.userSubscription = this.authService.user$.subscribe(user => {
+      this.user = user;
+    });
+  }
+
+  ngOnDestroy() {
+    this.clearCarousel();
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+  }
+
   // Background Carousel Data
   backgrounds = [
     { 
@@ -36,15 +62,6 @@ export class LandingPageComponent implements OnInit, OnDestroy {
 
   get currentBackground() {
     return this.backgrounds[this.currentBackgroundIndex];
-  }
-
-  ngOnInit() {
-    this.startCarousel();
-    this.preloadImages();
-  }
-
-  ngOnDestroy() {
-    this.clearCarousel();
   }
 
   startCarousel() {

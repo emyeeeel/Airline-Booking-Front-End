@@ -1,18 +1,57 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PopupInfoComponent } from '../popup-info/popup-info.component';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
-  imports: [PopupInfoComponent],
+  imports: [PopupInfoComponent, CommonModule],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+  styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent {
-
+export class HeaderComponent implements OnInit, OnDestroy{
   isPopupVisible = false;
   currentMenu: string = '';
   private hideTimeout: any;
+  userInitials: string = '';
+  advisories = [
+    { text: 'Travel Reminders' },
+    { text: 'Peak Travel Reminders for the Holiday Season' },
+    { text: 'Cancelled Flight Due to Eruption of Mt. Kanlaon' }
+  ];
+  currentAdvisoryIndex = 0;
+  user: any;
 
+  private userSubscription!: Subscription;
+
+  constructor(
+    private router: Router, 
+    public authService: AuthService
+  ) {}
+
+  ngOnInit() {
+    this.userSubscription = this.authService.user$.subscribe(user => {
+      this.user = user;
+      this.userInitials = this.calculateInitials();
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+  }
+
+  private calculateInitials(): string {
+    if (!this.user) return '';
+    const firstNameInitial = this.user.firstName?.charAt(0)?.toUpperCase() || '';
+    const lastNameInitial = this.user.lastName?.charAt(0)?.toUpperCase() || '';
+    return firstNameInitial + lastNameInitial;
+  }
+
+  // Rest of your existing methods
   showPopup(menu: string) {
     clearTimeout(this.hideTimeout);
     this.currentMenu = menu;
@@ -24,15 +63,6 @@ export class HeaderComponent {
       this.isPopupVisible = false;
     }, 300);
   }
-
-  // Advisory Data
-  advisories = [
-    { text: 'Travel Reminders' },
-    { text: 'Peak Travel Reminders for the Holiday Season' },
-    { text: 'Cancelled Flight Due to Eruption of Mt. Kanlaon' }
-  ];
-
-  currentAdvisoryIndex = 0;
 
   get currentAdvisory() {
     return this.advisories[this.currentAdvisoryIndex];
@@ -47,4 +77,14 @@ export class HeaderComponent {
       this.currentAdvisoryIndex = this.advisories.length - 1;
     }
   }
+
+  navigateToHome() {
+    this.router.navigate(['/landing']);
+  }
+
+  refreshUserData() {
+    this.user = this.authService.getCurrentUser();
+    this.userInitials = this.calculateInitials();
+  }
+
 }

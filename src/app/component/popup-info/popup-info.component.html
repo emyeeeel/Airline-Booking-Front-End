@@ -210,47 +210,102 @@
         </ul>      
     </div>
 
+    <!-- Combined Login/Logout Popup -->
     <div class="login-popup" *ngIf="currentMenu === 'login'">
-        <ul class="category">
-            <li class="icon-category">
-                <div class="icon-container"></div>
-                <a href="#">My Bookings</a>
-            </li>
-            <li class="icon-category">
-                <div class="icon-container"></div>
-                <a href="#">Wallet</a>
-            </li>
-            <li class="icon-category">
-                <div class="icon-container"></div>
-                <a href="#">Guest</a>
-            </li>
-            <li class="icon-category">
-                <div class="icon-container"></div>
-                <a href="#">Inbox</a>
-            </li>
-            <li>
-                <div class="login-button"><button type="button" (click)="navigateToLogin()">Login</button></div>
-                <p>Not yet a Member? <a href="#">Sign up</a></p>
-            </li>
-        </ul>
-        <hr>
-        <div class="for-business">
-            <div class="business-options">
-                <div class="business-option">
-                    <span><img src="https://cdn.media.amplience.net/i/cebupacificair/TF%20wallet_24px?fmt=auto&maxW=1920&maxH=1920" alt="logo-icon"><a href="#">Travel Fund</a></span>
-                    <p>View your available Travel Fund and use it to book flights or add-ons</p>
+        <!-- Not Logged In Content -->
+        <div *ngIf="!authService.isAuthenticated()">
+            <ul class="category">
+                <li class="icon-category">
+                    <div class="icon-container"></div>
+                    <a href="#">My Bookings</a>
+                </li>
+                <li class="icon-category">
+                    <div class="icon-container"></div>
+                    <a href="#">Wallet</a>
+                </li>
+                <li class="icon-category">
+                    <div class="icon-container"></div>
+                    <a href="#">Guest</a>
+                </li>
+                <li class="icon-category">
+                    <div class="icon-container"></div>
+                    <a href="#">Inbox</a>
+                </li>
+                <li>
+                    <div class="login-button">
+                        <button type="button" (click)="navigateToLogin()">Login</button>
+                    </div>
+                    <p>Not yet a Member? <a href="/signup">Sign up</a></p>
+                </li>
+            </ul>
+            <hr>
+            <div class="for-business">
+                <div class="business-options">
+                    <div class="business-option">
+                        <span><img src="https://cdn.media.amplience.net/i/cebupacificair/TF%20wallet_24px?fmt=auto&maxW=1920&maxH=1920" alt="logo-icon"><a href="#">Travel Fund</a></span>
+                        <p>View your available Travel Fund and use it to book flights or add-ons</p>
+                    </div>
+                    <div class="business-option">
+                        <span><img src="https://cdn.media.amplience.net/i/cebupacificair/Vouchersicon?fmt=auto&maxW=1920&maxH=1920" alt="logo-icon"><a href="#">My Vouchers</a></span>
+                        <p>Redeem your travel vouchers before they expire</p>
+                    </div>
+                    <div class="business-option">
+                        <span><img src="https://cdn.media.amplience.net/i/cebupacificair/Settingsicon?fmt=auto&maxW=1920&maxH=1920" alt="logo-icon"><a href="#">Settings</a></span>
+                        <p>Manage your notification preferences here</p>
+                    </div>
+                    <div class="business-option">
+                        <span><img src="https://cdn.media.amplience.net/i/cebupacificair/Addonsicon?fmt=auto&maxW=1920&maxH=1920" alt="logo-icon"><a href="#">Add-ons Preferences</a></span>
+                        <p>Set your preferences when you upgrade your trip with baggage, meals, seats, and other services</p>
+                    </div>
                 </div>
-                <div class="business-option">
-                    <span><img src="https://cdn.media.amplience.net/i/cebupacificair/Vouchersicon?fmt=auto&maxW=1920&maxH=1920" alt="logo-icon"><a href="#">My Vouchers</a></span>
-                    <p>Redeem your travel vouchers before they expire</p>
-                </div>
-                <div class="business-option">
-                    <span><img src="https://cdn.media.amplience.net/i/cebupacificair/Settingsicon?fmt=auto&maxW=1920&maxH=1920" alt="logo-icon"><a href="#">Settings</a></span>
-                    <p>Manage your notification preferences here</p>
-                </div>
-                <div class="business-option">
-                    <span><img src="https://cdn.media.amplience.net/i/cebupacificair/Addonsicon?fmt=auto&maxW=1920&maxH=1920" alt="logo-icon"><a href="#">Add-ons Preferences</a></span>
-                    <p>Set your preferences when you upgrade your trip with baggage, meals, seats, and other services</p>
+            </div>
+        </div>
+
+        <!-- Logged In Content -->
+        <div *ngIf="authService.isAuthenticated()">
+            <ul class="category">
+                <li class="icon-category">
+                    <div class="icon-container"></div>
+                    <a href="#">My Bookings</a>
+                </li>
+                <li class="icon-category">
+                    <div class="icon-container"></div>
+                    <a href="#">Wallet</a>
+                </li>
+                <li class="icon-category">
+                    <div class="icon-container"></div>
+                    <a href="#">Guest</a>
+                </li>
+                <li class="icon-category">
+                    <div class="icon-container"></div>
+                    <a href="#">Inbox</a>
+                </li>
+                <li>
+                    <div class="logout-span">
+                        <img class="logout-icon" src="https://cdn.media.amplience.net/i/cebupacificair/logoutGrey_24px?fmt=auto&amp;maxW=1920&amp;maxH=1920" alt="Log out">
+                        <a (click)="logout()">Log out</a>
+                    </div>
+                </li>
+            </ul>
+            <hr>
+            <div class="for-business">
+                <div class="business-options">
+                    <div class="business-option">
+                        <span><img src="https://cdn.media.amplience.net/i/cebupacificair/TF%20wallet_24px?fmt=auto&maxW=1920&maxH=1920" alt="logo-icon"><a href="#">Travel Fund</a></span>
+                        <p>View your available Travel Fund and use it to book flights or add-ons</p>
+                    </div>
+                    <div class="business-option">
+                        <span><img src="https://cdn.media.amplience.net/i/cebupacificair/Vouchersicon?fmt=auto&maxW=1920&maxH=1920" alt="logo-icon"><a href="#">My Vouchers</a></span>
+                        <p>Redeem your travel vouchers before they expire</p>
+                    </div>
+                    <div class="business-option">
+                        <span><img src="https://cdn.media.amplience.net/i/cebupacificair/Settingsicon?fmt=auto&maxW=1920&maxH=1920" alt="logo-icon"><a href="#">Settings</a></span>
+                        <p>Manage your notification preferences here</p>
+                    </div>
+                    <div class="business-option">
+                        <span><img src="https://cdn.media.amplience.net/i/cebupacificair/Addonsicon?fmt=auto&maxW=1920&maxH=1920" alt="logo-icon"><a href="#">Add-ons Preferences</a></span>
+                        <p>Set your preferences when you upgrade your trip with baggage, meals, seats, and other services</p>
+                    </div>
                 </div>
             </div>
         </div>

@@ -500,3 +500,20 @@ strong {
         }
     }
 }
+
+.logout-span{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    align-items: center;
+    padding-left: 40px;
+    padding-top: 20px;
+    img{
+        width: 17px;
+        height: 16px;
+    }
+    a{
+        color: #007bff;
+        font-weight: 700;
+    }
+}
