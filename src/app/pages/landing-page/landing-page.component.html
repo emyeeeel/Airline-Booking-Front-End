@@ -9,21 +9,50 @@
       </div>
     </div>
     <div class="booking-container">
-      <div class="destination-container">
-        <app-destination-picker></app-destination-picker>
+      <!-- First Row -->
+      <div class="booking-titles">
+        <img class="ng-tns-c13-13" src="https://cdn.media.amplience.net/i/cebupacificair/Flight-Icon?fmt=auto&amp;maxW=1920&amp;maxH=1920">
+        <p>Flight</p>
+
       </div>
-      <div class="date-container">
-        <app-date-picker></app-date-picker>
-      </div>
-      <div class="button-container">
-        <app-search-flight-button></app-search-flight-button>
+    
+      <!-- Second Row -->
+      <div class="booking-controls">
+        <div class="destination-container">
+          <app-destination-picker></app-destination-picker>
+        </div>
+        <div class="date-container">
+          <app-date-picker></app-date-picker>
+        </div>
+        <div class="button-container">
+          <app-search-flight-button></app-search-flight-button>
+        </div>
       </div>
     </div>
-    <div class="test-container">
-      <app-main-search></app-main-search>
-    </div>
-    <div *ngIf="user">
-      Welcome, {{ user.firstName }} {{ user.lastName }}!
+
+    <div class="sns-stories">
+      <ul>
+        <li class="story-list">
+          <img src="https://web-image.useinsider.com/cebupacific/defaultImageLibrary/1-1730702163.png" alt="story">
+          <p>Clark</p>
+        </li>
+        <li class="story-list">
+          <img src="https://web-image.useinsider.com/cebupacific/defaultImageLibrary/2-1730702183.png" alt="story">
+          <p>Cebu</p>
+        </li>
+        <li class="story-list"> 
+          <img src="https://web-image.useinsider.com/cebupacific/defaultImageLibrary/ILO-1730702294.png" alt="story">
+          <p>Iloilo</p>
+        </li>
+        <li class="story-list">
+          <img src="https://web-image.useinsider.com/cebupacific/defaultImageLibrary/4-1730702311.png" alt="story">
+          <p>Davao</p>
+        </li>
+        <li class="story-list">
+          <img src="https://web-image.useinsider.com/cebupacific/defaultImageLibrary/InStory%20Cover-1730702355.png" alt="story">
+          <p>New Ceb Routes</p>
+        </li>
+      </ul>
     </div>
   </main>
   

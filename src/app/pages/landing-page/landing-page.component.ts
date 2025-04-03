@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-landing-page',
-  imports: [RouterOutlet, HeaderComponent, MainSearchComponent, DatePickerComponent, SearchFlightButtonComponent, DestinationPickerComponent, CommonModule],
+  imports: [RouterOutlet, HeaderComponent, DestinationPickerComponent, DatePickerComponent, SearchFlightButtonComponent,  CommonModule], //DestinationPickerComponent
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss'
 })

@@ -54,12 +54,14 @@
 
   .booking-container {
     position: absolute;
-    top: 65%;
+    top: 63%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 4;
     width: 70%;
-    height: 140px;
+    // Remove fixed height
+    height: auto; // Changed from 140px
+    min-height: 160px; // Add minimum height
     background: rgba(255, 255, 255, 0.95);
     border-radius: 12px;
     box-shadow: 0 12px 24px rgba(0,0,0,0.15);
@@ -69,17 +71,55 @@
     animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
     background: #F7F7F7;
     
-    // Add these flexbox properties
+    // Changed to column layout
     display: flex;
-    gap: 15px;
-    align-items: center; // Vertical alignment
-    justify-content: space-between; // Horizontal alignment
+    flex-direction: column;
+    gap: 20px;
   
-    .destination-container,
-    .date-container,
-    .button-container {
-      max-height: 55px;
-      flex: 1; // Makes both containers share available space equally
+    .booking-titles {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      
+      img {
+        width: 18px;
+        height: 18px;
+      }
+      
+      p {
+        margin: 0;
+        font-weight: 700;
+        font-size: 15px;
+        color: #333;
+      }
+    }
+  
+    .booking-controls {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      justify-content: space-between;
+      
+      .destination-container,
+      .date-container,
+      .button-container {
+        max-height: 55px;
+        flex: 1;
+      }
+  
+      // Optional: Add responsive behavior
+      @media (max-width: 1200px) {
+        flex-wrap: wrap;
+        gap: 10px;
+        
+        & > * {
+          flex: 1 1 48%;
+        }
+        
+        .button-container {
+          flex-basis: 100%;
+        }
+      }
     }
   }
 
@@ -88,6 +128,53 @@
     z-index: 5; // Higher than booking-container's z-index: 4
   }
 
-  .test-container {
-    margin-top: 120px;
+  .sns-stories {
+    margin-top: 145px;
+    height: 140px;
+    width: 100vw;
+    padding: 0 20px; // Add horizontal padding
+    
+    ul {
+      display: flex;
+      flex-direction: row;
+      justify-content: center; // Center the stories
+      gap: 150px; // Space between items
+      padding: 0;
+      margin: 0;
+      list-style: none;
+  
+      li {
+        width: 87px;
+        height: 87px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+  
+        img {
+          width: 100%;
+          height: 100%;
+          border: 3px solid white;
+          border-radius: 50%;
+          object-fit: cover;
+          box-sizing: border-box;
+          box-shadow: 
+            0 0 0 3px #0074e4, /* Blue outer border */
+            inset 0 0 0 1px white; /* Inner white border (redundant but shows alternative) */
+          
+          &:hover {
+            transform: scale(1.05);
+          }
+        }
+  
+        p {
+          margin: 0;
+          font-size: 12px;
+          font-weight: 400;
+          color: #006fc1;
+          text-align: center;
+          white-space: nowrap;
+        }
+      }
+    }
   }
