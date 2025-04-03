@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Country } from '../../models/country.model';
+import { City } from '../../models/city.model';
 
 @Component({
   selector: 'app-location-popup',
@@ -42,7 +43,19 @@ export class LocationPopupComponent {
     this.expandedCountries = newSet;
   }
 
-  selectCity(cityName: string): void {
-    this.locationSelected.emit(cityName);
+  selectCity(city: City): void {
+    if (city.airports?.length > 0) {
+      // Get first airport's IATA code (modify if you need different logic)
+      const iataCode = city.airports[0].IATA_code;
+      this.locationSelected.emit(`${city.name} (${iataCode})`);
+    } else {
+      // Fallback to just city name if no airports
+      this.locationSelected.emit(city.name);
+    }
+  }
+
+  // location-popup.component.ts
+  getAirportCodes(city: City): string {
+    return city.airports.map(a => a.IATA_code).join(', ');
   }
 }

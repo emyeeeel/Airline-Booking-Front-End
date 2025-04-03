@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, Input } from '@angular/core';
 import { PopupInfoComponent } from '../popup-info/popup-info.component';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -7,11 +7,13 @@ import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
+  standalone: true,
   imports: [PopupInfoComponent, CommonModule],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit, OnDestroy{
+export class HeaderComponent implements OnInit, OnDestroy {
+  @Input() isHoveredByDefault = false;
   isPopupVisible = false;
   currentMenu: string = '';
   private hideTimeout: any;
@@ -51,7 +53,6 @@ export class HeaderComponent implements OnInit, OnDestroy{
     return firstNameInitial + lastNameInitial;
   }
 
-  // Rest of your existing methods
   showPopup(menu: string) {
     clearTimeout(this.hideTimeout);
     this.currentMenu = menu;
@@ -86,5 +87,4 @@ export class HeaderComponent implements OnInit, OnDestroy{
     this.user = this.authService.getCurrentUser();
     this.userInitials = this.calculateInitials();
   }
-
 }

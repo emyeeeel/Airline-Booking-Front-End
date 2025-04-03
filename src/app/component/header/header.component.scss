@@ -1,4 +1,3 @@
-// header.component.scss
 header {
   background: transparent;
   position: absolute;
@@ -24,12 +23,13 @@ header {
     }
   }
 
-  &:hover {
+  // Combined hover and forced hover state
+  &.force-hover, &:hover {
     .header-top {
       background-color: rgba(0, 164, 229, 0.9);
       
       .material-icons:not(.warning-icon) {
-        color: white !important; // Keep white on blue background
+        color: white !important;
       }
     }
     
@@ -43,7 +43,7 @@ header {
       }
       
       .material-icons {
-        color: #006FC1 !important; // Blue icons on white background
+        color: #006FC1 !important;
       }
       
       .logo-header-container {
@@ -66,13 +66,12 @@ header {
   align-items: center;
   gap: 20px;
 
-  // Unified icon styling
   .material-icons {
     color: white !important;
     transition: all 0.2s ease;
     
     &:not(.warning-icon) {
-      font-size: 16px; // Standard size for all icons
+      font-size: 16px;
     }
   }
 
@@ -83,11 +82,11 @@ header {
     padding-left: 20%;
 
     .warning-icon {
-      color: #FFD700 !important; // Special yellow color
+      color: #FFD700 !important;
       background-color: rgba(255, 215, 0, 0.1);
       border-radius: 50%;
       padding: 4px;
-      font-size: 18px; // Slightly larger warning icon
+      font-size: 18px;
     }
 
     .chevron {
@@ -148,7 +147,6 @@ header {
   justify-content: center;
   gap: 20px;
 
-  // Unified icon styling
   .material-icons {
     color: white !important;
     transition: color 0.3s ease;
@@ -222,8 +220,8 @@ header {
   .user-initials {
     width: 24px;
     height: 24px;
-    background-color: #FFD700; // Yellow color
-    color: #006FC1; // Blue color
+    background-color: #FFD700;
+    color: #006FC1;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -232,7 +230,6 @@ header {
     font-size: 12px;
     transition: all 0.3s ease;
     
-    // Keep colors consistent on header hover
     .header:hover & {
       background-color: #FFD700;
       color: #006FC1;
@@ -263,4 +260,3 @@ header {
     visibility: visible;
   }
 }
-

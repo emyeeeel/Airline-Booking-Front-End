@@ -5,6 +5,7 @@ import { LocationPopupComponent } from '../location-popup/location-popup.compone
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { FlightSearchService } from '../../services/flight-search.service';
 
 @Component({
   selector: 'app-destination-picker',
@@ -17,6 +18,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   styleUrl: './destination-picker.component.scss'
 })
 export class DestinationPickerComponent {
+  constructor(private flightSearchService: FlightSearchService) {}
   selectedFrom: string | null = null;
   selectedTo: string | null = null;
   showFromPopup = false;
@@ -55,11 +57,16 @@ export class DestinationPickerComponent {
   handleLocationSelected(location: string, type: 'from' | 'to'): void {
     if (type === 'from') {
       this.selectedFrom = location;
-      this.showFromPopup = false;
+      this.flightSearchService.setFromIata(location);
     } else {
       this.selectedTo = location;
-      this.showToPopup = false;
+      this.flightSearchService.setToIata(location);
     }
+    
+    // Close popups
+    type === 'from' 
+      ? this.showFromPopup = false 
+      : this.showToPopup = false;
   }
 
   @HostListener('document:click', ['$event'])

@@ -1,13 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from '../../component/header/header.component';
-import { MainSearchComponent } from '../../component//main-search/main-search.component';
 import { DatePickerComponent } from '../../component//date-picker/date-picker.component';
 import { SearchFlightButtonComponent } from '../../component//search-flight-button/search-flight-button.component';
 import { DestinationPickerComponent } from '../../component/destination-picker/destination-picker.component';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { FlightSearchService } from '../../services/flight-search.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -21,7 +22,11 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   user: any;
   private userSubscription!: Subscription;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private flightSearchService: FlightSearchService
+  ) {}
 
   ngOnInit() {
     this.startCarousel();
@@ -87,6 +92,23 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   private preloadImages() {
     this.backgrounds.forEach(bg => {
       new Image().src = bg.image;
+    });
+  }
+
+  onSearchClick() {
+    const fromIata = this.flightSearchService.fromIataSubject.value;
+    const toIata = this.flightSearchService.toIataSubject.value;
+
+    if (!fromIata || !toIata) {
+      alert('Please select both departure and arrival locations');
+      return;
+    }
+
+    this.router.navigate(['/flights'], {
+      queryParams: {
+        departure: fromIata,
+        arrival: toIata
+      }
     });
   }
 }

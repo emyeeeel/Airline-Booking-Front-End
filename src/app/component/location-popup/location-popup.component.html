@@ -15,8 +15,9 @@
           <ul *ngIf="expandedCountries.has(country.id)" class="city-list">
             <li *ngFor="let city of country.cities" class="city-item">
               <a href="#" 
-                 class="city-link"
-                 (click)="selectCity(city.name); $event.preventDefault()">
+                class="city-link"
+                (click)="selectCity(city); $event.preventDefault()"
+                [attr.data-airports]="getAirportCodes(city)">
                 {{ city.name }}
               </a>
             </li>
