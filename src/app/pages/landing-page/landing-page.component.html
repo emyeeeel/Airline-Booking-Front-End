@@ -13,7 +13,11 @@
       <div class="booking-titles">
         <img class="ng-tns-c13-13" src="https://cdn.media.amplience.net/i/cebupacificair/Flight-Icon?fmt=auto&amp;maxW=1920&amp;maxH=1920">
         <p>Flight</p>
-
+        <select class="flight-type-dropdown" [(ngModel)]="selectedFlightType">
+          <option value="round-trip">Round-trip</option>
+          <option value="one-way">One-way</option>
+          <option value="multi-city">Multi-city</option>
+        </select>
       </div>
     
       <!-- Second Row -->

@@ -9,11 +9,11 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { FlightSearchService } from '../../services/flight-search.service';
 import { Router } from '@angular/router';
-
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-landing-page',
-  imports: [RouterOutlet, HeaderComponent, DestinationPickerComponent, DatePickerComponent, SearchFlightButtonComponent,  CommonModule], //DestinationPickerComponent
+  imports: [RouterOutlet, HeaderComponent, DestinationPickerComponent, DatePickerComponent, SearchFlightButtonComponent,  CommonModule, FormsModule], 
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss'
 })
@@ -21,6 +21,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
 
   user: any;
   private userSubscription!: Subscription;
+  selectedFlightType = 'round-trip';
 
   constructor(
     private authService: AuthService,

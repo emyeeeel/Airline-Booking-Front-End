@@ -25,6 +25,8 @@ export class FlightsPageComponent implements OnInit {
   error: string | null = null;
   selectedDepartDate?: Date;
   selectedReturnDate?: Date;
+  selectedDepartingFlight: Flight | null = null;
+  selectedReturningFlight: Flight | null = null;
 
   private apiBase = 'http://127.0.0.1:8000/api/';
 
@@ -33,6 +35,16 @@ export class FlightsPageComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router
   ) { }
+
+  onDepartingFlightSelect(flight: Flight): void {
+    this.selectedDepartingFlight = 
+      this.selectedDepartingFlight === flight ? null : flight;
+  }
+  
+  onReturningFlightSelect(flight: Flight): void {
+    this.selectedReturningFlight = 
+      this.selectedReturningFlight === flight ? null : flight;
+  }
 
   ngOnInit(): void {
     this.loadData();

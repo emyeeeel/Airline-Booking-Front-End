@@ -3,6 +3,7 @@ import { LandingPageComponent } from './pages/landing-page/landing-page.componen
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { SignupPageComponent } from './pages/signup-page/signup-page.component';
 import { FlightsPageComponent } from './pages/flights-page/flights-page.component';
+import { SearchFlightPopupComponent } from './component/search-flight-popup/search-flight-popup.component';
 
 export const routes: Routes = [
     {
@@ -25,5 +26,9 @@ export const routes: Routes = [
     {
         path: 'flights',
         component: FlightsPageComponent
-    }
+    },
+    {
+        path: 'search-flights',
+        component: SearchFlightPopupComponent
+    },
 ];

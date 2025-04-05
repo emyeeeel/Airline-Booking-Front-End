@@ -178,3 +178,40 @@
       }
     }
   }
+
+
+  .flight-type-dropdown {
+    margin-left: 305px;
+    // Remove borders
+    border: none !important;
+    
+    // Text color
+    color: #333; // Change to your desired text color
+    
+    // Remove default dropdown arrow
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    
+    // Custom dropdown arrow
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+    
+    // Padding for text
+    padding-right: 32px !important;
+    
+    // Focus state
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(0, 116, 228, 0.3);
+    }
+    
+    // Optional: Change dropdown options styling
+    option {
+      color: #333; // Change option text color
+      background-color: white;
+    }
+  }
+  
