@@ -1,108 +1,241 @@
 <app-header [isHoveredByDefault]="true"></app-header>
 
 <div class="flights-wrapper">
-    <div class="flights-container">
-        <div *ngIf="filteredFlights.length === 0" class="no-flights">
-            No flights available
+  <div class="flights-container">
+    <div *ngIf="departingFlights.length === 0 && returningFlights.length === 0" class="no-flights">
+      No flights available
+    </div>
+    
+    <div class="flight-details">
+      <div class="departing-flight-details">
+        <p class="section-title">Departing Flight</p>
+        <div class="route-info" *ngIf="!loading && !error">
+          <span class="city-name">{{ departureCityName }}</span>
+          <span class="iata-code">{{ departingFlights[0]!.departure_airport!.IATA_code }}</span>
+          <span class="to-text">To</span>
+          <span class="city-name">{{ arrivalCityName }}</span>
+          <span class="iata-code">{{ departingFlights[0]!.arrival_airport!.IATA_code }}</span>
+        </div>
+        <p class="date-text" *ngIf="selectedDepartDate">
+          {{ selectedDepartDate | date:'MMM d, y' }}
+        </p>
+      </div>
+
+      <div class="returning-flight-details">
+        <p class="section-title">Returning Flight</p>
+        <div class="route-info" *ngIf="!loading && !error">
+          <span class="city-name">{{ arrivalCityName }}</span>
+          <span class="iata-code">{{ returningFlights[0]!.departure_airport!.IATA_code }}</span>
+          <span class="to-text">To</span>
+          <span class="city-name">{{ departureCityName }}</span>
+          <span class="iata-code">{{ returningFlights[0]!.arrival_airport!.IATA_code }}</span>
+        </div>
+        <p class="date-text" *ngIf="selectedReturnDate">
+          {{ selectedReturnDate | date:'MMM d, y' }}
+        </p>
+      </div>
+
+      <div class="guests-details">
+        <p class="section-title">Guests</p>
+        <h6 class="guests-count">1 Adult</h6>
+      </div>
+
+      <div class="edit-search-button">
+        <button type="button">Edit Search</button>
+      </div>
+    </div>
+
+    <div class="booking-progress">
+      <ul>
+        <li>
+          <img src="https://cdn.media.amplience.net/i/cebupacificair/Select-Done?fmt=auto&maxW=1920&maxH=1920" 
+               alt="select-flight-logo">
+          Select Flight
+        </li>
+        <li>
+          <img src="https://cdn.media.amplience.net/i/cebupacificair/Guest-Notyet?fmt=auto&maxW=1920&maxH=1920" 
+               alt="guest-details-logo">
+          Guest Details
+        </li>
+        <li>
+          <img src="https://cdn.media.amplience.net/i/cebupacificair/Add-ons-Notyet?fmt=auto&maxW=1920&maxH=1920" 
+               alt="add-ons-logo">
+          Add ons
+        </li>
+        <li>
+          <img src="https://cdn.media.amplience.net/i/cebupacificair/Payment-Notyet?fmt=auto&maxW=1920&maxH=1920" 
+               alt="payment-logo">
+          Payment
+        </li>
+        <li>
+          <img src="https://cdn.media.amplience.net/i/cebupacificair/Confirmation-Notyet?fmt=auto&maxW=1920&maxH=1920" 
+               alt="confirmation-logo">
+          Confirmation
+        </li>
+      </ul>
+    </div>
+
+    <div class="jump-to" *ngIf="departingFlights.length > 0 && returningFlights.length > 0">
+        <span>Jump to </span>
+        <span class="iata-code depart">
+          <a (click)="scrollTo('departure-section')" class="scroll-link">
+            {{ departingFlights[0]!.departure_airport!.IATA_code }} - 
+            {{ departingFlights[0]!.arrival_airport!.IATA_code }}
+          </a>
+        </span>
+        <span class="iata-code arrival">
+          <a (click)="scrollTo('arrival-section')" class="scroll-link">
+            {{ returningFlights[0]!.departure_airport!.IATA_code }} - 
+            {{ returningFlights[0]!.arrival_airport!.IATA_code }}
+          </a>
+        </span>
+    </div>
+
+    <!-- Departing Flights Section -->
+    <div class="flight-section" *ngIf="departingFlights.length > 0">
+        <p class="flight-title">Select your departing flight</p>
+        <div id="departure-section">
+            <span class="city">{{ departureCityName }} <span class="code">{{ departingFlights[0]!.departure_airport!.IATA_code }}</span></span>
+            <img src="https://cdn.media.amplience.net/i/cebupacificair/flight_24px?fmt=auto&maxW=1920&maxH=1920&w=32" alt="flight-logo">
+            <span class="city">{{ arrivalCityName }} <span class="code">{{ departingFlights[0]!.arrival_airport!.IATA_code }}</span></span>
+        </div>
+      <div *ngFor="let flight of departingFlights" class="flight-card">
+        <div class="depart-arrival-details">
+          <div class="departure">
+            <p>{{ flight.departure_time | date: 'h:mm a' }}</p>
+            <div class="departure-text">
+              <img src="https://www.cebupacificair.com/assets/images/icon-flight_takeoff.png" 
+                   alt="depart-logo">
+              <p>Depart - {{ flight.departure_airport.IATA_code }}</p>
+            </div>
           </div>
-          
-          <div class="flight-details">
-            <div class="departing-flight-details">
-                <p class="section-title">Departing Flight</p>
-                <div class="route-info" *ngIf="!loading && !error">
-                    <span class="city-name">{{ departureCityName }}</span>
-                    <span class="iata-code"> {{ filteredFlights[0]!.departure_airport!.IATA_code }}</span>
-                    <span class="to-text">To</span>
-                    <span class="city-name">{{ arrivalCityName }}</span>
-                    <span class="iata-code"> {{ filteredFlights[0]!.arrival_airport!.IATA_code }}</span>
-                </div>
-                <p class="date-text">Date here</p>
-            </div>
-            
-            <div class="returning-flight-details">
-                <p class="section-title">Returning Flight</p>
-                <div class="route-info" *ngIf="!loading && !error">
-                    <span class="city-name">{{ arrivalCityName }}</span>
-                    <span class="iata-code">{{ filteredFlights[0]!.arrival_airport!.IATA_code }}</span>
-                    <span class="to-text">To</span>
-                    <span class="city-name">{{ departureCityName }}</span>
-                    <span class="iata-code">{{ filteredFlights[0]!.departure_airport!.IATA_code }}</span>
-                </div>
-                <p class="date-text">Date here</p>
-            </div>
-            
-            <div class="guests-details">
-                <p class="section-title">Guests</p>
-                <h6 class="guests-count">1 Adult</h6>
-            </div>
 
-            <div class="edit-search-button">
-                <button type="button">Edit Search</button>
+          <div class="icon-divider">
+            <img src="https://cdn.media.amplience.net/i/cebupacificair/flight-icon-cebupacific?fmt=auto&maxW=1920&maxH=1920" 
+                 alt="flight-icon">
+          </div>
+
+          <div class="arrival">
+            <p>{{ flight.arrival_time | date: 'h:mm a' }}</p>
+            <div class="arrival-text">
+              <img src="https://www.cebupacificair.com/assets/images/icon-flight_landing.png" 
+                   alt="arrive-logo">
+              <p>Arrive - {{ flight.arrival_airport.IATA_code }}</p>
             </div>
+          </div>
         </div>
 
-        <div class="booking-progress">
-            <ul>
-                <li>
-                    <img src="https://cdn.media.amplience.net/i/cebupacificair/Select-Done?fmt=auto&maxW=1920&maxH=1920" alt="select-flight-logo">
-                    Select Flight
-                </li>
-                <li>
-                    <img src="https://cdn.media.amplience.net/i/cebupacificair/Guest-Notyet?fmt=auto&maxW=1920&maxH=1920" alt="guest-details-logo">
-                    Guest Details
-                </li>
-                <li>
-                    <img src="https://cdn.media.amplience.net/i/cebupacificair/Add-ons-Notyet?fmt=auto&maxW=1920&maxH=1920" alt="add-ons-logo">
-                    Add ons
-                </li>
-                <li>
-                    <img src="https://cdn.media.amplience.net/i/cebupacificair/Payment-Notyet?fmt=auto&maxW=1920&maxH=1920" alt="payment=logo">
-                    Payment
-                </li>
-                <li>
-                    <img src="https://cdn.media.amplience.net/i/cebupacificair/Confirmation-Notyet?fmt=auto&maxW=1920&maxH=1920" alt="confirmation-logo">
-                    Confirmation
-                </li>
-            </ul>
+        <div class="time-duration">
+          <p>{{ formatDuration(flight.duration) }}</p>
         </div>
-      
-        <div *ngFor="let flight of filteredFlights" class="flight-card">
-    
-            <div class="depart-arrival-details">
-                <div class="departure">
-                    <!-- Change this line -->
-                    <p>{{ flight.departure_time | date: 'h:mm a' }}</p>
-                    <div class="departure-text">
-                        <img src="https://www.cebupacificair.com/assets/images/icon-flight_takeoff.png" alt="depart-logo">
-                        <p>Depart - {{ flight.departure_airport.IATA_code }}</p>
-                    </div>
-                </div>
-        
-                <div class="icon-divider">
-                    <img src="https://cdn.media.amplience.net/i/cebupacificair/flight-icon-cebupacific?fmt=auto&maxW=1920&maxH=1920" alt="flight=icon">
-                </div>
-        
-                <div class="arrival">
-                    <!-- And this line -->
-                    <p>{{ flight.arrival_time | date: 'h:mm a' }}</p>
-                    <div class="arrival-text">
-                        <img src="https://www.cebupacificair.com/assets/images/icon-flight_landing.png" alt="depart-logo">
-                        <p>Arrive - {{ flight.arrival_airport.IATA_code }}</p>
-                    </div>
-                </div>
-            </div>
-    
-            <div class="time-duration">
-                <p>{{ formatDuration(flight.duration) }}</p>
-            </div>
-    
-            <div class="flight-number">
-                <p>{{ flight.flight_number }}</p>
-            </div>
-    
-            <div class="price">
-                <p>PHP {{ flight.price | number:'1.2-2' }}</p>
-            </div>
+
+        <div class="flight-number">
+          <p>{{ flight.flight_number }}</p>
+        </div>
+
+        <div class="price">
+          <p>PHP {{ flight.price | number:'1.2-2' }}</p>
         </div>
       </div>
+    </div>
+
+    <div class="list-footer">
+        <p class="operated-by"> 
+            Flight operated by: 
+            <span class="content">
+                <img class="airplane-logo" src="https://cdn.media.amplience.net/i/cebupacificair/flight-icon-cebupacific?fmt=auto&amp;maxW=1920&amp;maxH=1920" alt=""> 
+                Cebu Pacific
+            </span>
+            <span class="content">
+                <img class="airplane-logo" src="https://cdn.media.amplience.net/i/cebupacificair/flight-icon-cebgo?fmt=auto&amp;maxW=1920&amp;maxH=1920" alt="">
+                Cebgo 
+            </span>
+            <span class="content">
+                <img class="airplane-logo" src="https://cdn.media.amplience.net/i/cebupacificair/flight-icon-airswift?fmt=auto&amp;maxW=1920&amp;maxH=1920" alt=""> 
+                AirSWIFT 
+            </span>
+        </p>
+        <p class="info-text">Information and updates on baggage fees can be found <a href="#" class="here-link">here</a>.</p>
+    </div>
+
+    <hr>
+
+    <!-- Returning Flights Section -->
+    <div class="flight-section" *ngIf="returningFlights.length > 0">
+        <p class="flight-title">Select your returning flight</p>
+        <div id="arrival-section">
+            <span class="city">{{ arrivalCityName }} <span class="code">{{ departingFlights[0]!.arrival_airport!.IATA_code }}</span></span>
+            <img src="https://cdn.media.amplience.net/i/cebupacificair/flight_24px?fmt=auto&maxW=1920&maxH=1920&w=32" alt="flight-logo">
+            <span class="city">{{ departureCityName }} <span class="code">{{ departingFlights[0]!.departure_airport!.IATA_code }}</span></span>
+        </div>
+      <div *ngFor="let flight of returningFlights" class="flight-card">
+        <div class="depart-arrival-details">
+          <div class="departure">
+            <p>{{ flight.departure_time | date: 'h:mm a' }}</p>
+            <div class="departure-text">
+              <img src="https://www.cebupacificair.com/assets/images/icon-flight_takeoff.png" 
+                   alt="depart-logo">
+              <p>Depart - {{ flight.departure_airport.IATA_code }}</p>
+            </div>
+          </div>
+
+          <div class="icon-divider">
+            <img src="https://cdn.media.amplience.net/i/cebupacificair/flight-icon-cebupacific?fmt=auto&maxW=1920&maxH=1920" 
+                 alt="flight-icon">
+          </div>
+
+          <div class="arrival">
+            <p>{{ flight.arrival_time | date: 'h:mm a' }}</p>
+            <div class="arrival-text">
+              <img src="https://www.cebupacificair.com/assets/images/icon-flight_landing.png" 
+                   alt="arrive-logo">
+              <p>Arrive - {{ flight.arrival_airport.IATA_code }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="time-duration">
+          <p>{{ formatDuration(flight.duration) }}</p>
+        </div>
+
+        <div class="flight-number">
+          <p>{{ flight.flight_number }}</p>
+        </div>
+
+        <div class="price">
+          <p>PHP {{ flight.price | number:'1.2-2' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="list-footer">
+        <p class="operated-by"> 
+            Flight operated by: 
+            <span class="content">
+                <img class="airplane-logo" src="https://cdn.media.amplience.net/i/cebupacificair/flight-icon-cebupacific?fmt=auto&amp;maxW=1920&amp;maxH=1920" alt=""> 
+                Cebu Pacific
+            </span>
+            <span class="content">
+                <img class="airplane-logo" src="https://cdn.media.amplience.net/i/cebupacificair/flight-icon-cebgo?fmt=auto&amp;maxW=1920&amp;maxH=1920" alt="">
+                Cebgo 
+            </span>
+            <span class="content">
+                <img class="airplane-logo" src="https://cdn.media.amplience.net/i/cebupacificair/flight-icon-airswift?fmt=auto&amp;maxW=1920&amp;maxH=1920" alt=""> 
+                AirSWIFT 
+            </span>
+        </p>
+        <p class="info-text">Information and updates on baggage fees can be found <a href="#" class="here-link">here</a>.</p>
+    </div>
+
+    <!-- No Flights in Section Messages -->
+    <div *ngIf="departingFlights.length === 0 && returningFlights.length > 0" 
+         class="no-flights-in-section">
+      No departing flights found
+    </div>
+    <div *ngIf="returningFlights.length === 0 && departingFlights.length > 0" 
+         class="no-flights-in-section">
+      No returning flights found
+    </div>
+
+  </div>
 </div>

@@ -84,9 +84,31 @@ $breakpoint-mobile: 768px;
       }
     }
 
-    // .edit-search-button {
-    //   // Add styles when content exists
-    // }
+    .edit-search-button {
+      button {
+        // Remove fixed width and height
+        // width: 165px;
+        // height: 30px;
+        padding: 8px 16px; // Add proper padding
+        border-radius: 10px;
+        border: 1px solid #006FC1;
+        color: #006fc1;
+        letter-spacing: .015em;
+        background: transparent;
+        max-width: 165px;
+        font-size: 14px; // Add appropriate font size
+        cursor: pointer;
+        transition: all 0.2s ease;
+    
+        &:hover {
+          background-color: rgba(0, 111, 193, 0.05);
+        }
+    
+        &:active {
+          background-color: rgba(0, 111, 193, 0.1);
+        }
+      }
+    }
   }
 
   .booking-progress {
@@ -215,7 +237,7 @@ $breakpoint-mobile: 768px;
     .icon-divider {
       display: flex;
       align-items: center;
-
+      margin-right: 30px;
       img {
         width: 18px;
         height: 18px;
@@ -256,6 +278,18 @@ $breakpoint-mobile: 768px;
     color: $color-primary;
     min-width: 100px;
     text-align: right;
+  }
+}
+
+.flight-section{
+  h3{
+    font-weight: 600;
+    font-size: 15px;
+    padding: 10px 25px;
+
+    &:first-child {
+      margin-top: 10px;
+    }
   }
 }
 
@@ -324,4 +358,115 @@ $breakpoint-mobile: 768px;
   border-radius: 8px;
   margin: 20px;
   box-shadow: $shadow-card;
+}
+
+.jump-to{
+  padding-left: 25px;
+  margin-top: 25px;
+  span{
+    font-size: 11px;
+    color: #575757;
+    font-weight: 700;
+  }
+}
+
+.flight-section{
+  .flight-title{
+    padding-left: 25px;
+    font-size: 15px;
+    letter-spacing: .005em;
+    color: #575757;
+    margin-bottom: 8px;
+    margin-top: 25px;
+  }
+
+  #departure-section, #arrival-section {
+    padding-left: 25px;
+    display: flex;
+    align-items: center; // Vertical centering
+    gap: 8px; // Space between elements
+    margin: 15px 0;
+  
+    span {
+      font-size: 30px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+  
+    img {
+      // Remove existing margins
+      margin: 0 !important; 
+      width: 32px;
+      height: 32px;
+      align-self: center; // Ensure image stays centered
+    }
+  }
+  
+  .city {
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+  }
+  
+  .code {
+    font-weight: 400;
+    margin-left: 4px;
+    font-size: 0.8em;
+  }
+}
+
+.list-footer {
+  padding-left: 25px;
+  font-family: Arial, sans-serif;
+  margin-bottom: 50px;
+
+  // Base paragraph styling
+  p {
+    font-size: 13px;
+    color: #575757;
+    margin: 0;
+    
+    // Add spacing between paragraphs
+    & + p {
+      margin-top: 10px;
+    }
+  }
+
+  // Airline operator section
+  .operated-by {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  // Individual airline content
+  .content {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    vertical-align: middle;
+  }
+
+  // Airplane logo styling
+  .airplane-logo {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+  }
+
+  // "Here" link styling
+  .here-link {
+    color: #006fc1;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 500;
+    
+    &:hover {
+      text-decoration: none;
+    }
+  }
 }

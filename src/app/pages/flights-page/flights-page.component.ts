@@ -2,12 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Flight } from '../../models/flight.model';
-import { ActivatedRoute } from '@angular/router';
-import { FlightSearchService } from '../../services/flight-search.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderComponent } from "../../component/header/header.component";
 import { City } from '../../models/city.model';
 import { combineLatest, map } from 'rxjs';
-
+import { isValid } from 'date-fns';
 
 @Component({
   selector: 'app-flights-page',
@@ -17,22 +16,37 @@ import { combineLatest, map } from 'rxjs';
 })
 export class FlightsPageComponent implements OnInit {
   flights: Flight[] = [];
-  filteredFlights: Flight[] = [];
+  departingFlights: Flight[] = [];
+  returningFlights: Flight[] = [];
   cities = new Map<number, City>();
   departureCityName = 'Loading...';
   arrivalCityName = 'Loading...';
   loading = true;
   error: string | null = null;
+  selectedDepartDate?: Date;
+  selectedReturnDate?: Date;
 
   private apiBase = 'http://127.0.0.1:8000/api/';
 
   constructor(
     private http: HttpClient,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     this.loadData();
+  }
+
+  scrollTo(fragment: string): void {
+    const element = document.getElementById(fragment);
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start',
+        inline: 'nearest'
+      });
+    }
   }
 
   private loadData(): void {
@@ -42,16 +56,27 @@ export class FlightsPageComponent implements OnInit {
 
     combineLatest([cities$, flights$, params$]).pipe(
       map(([cities, flights, params]) => {
-        // Map cities for quick lookup
+        if (!this.validateParameters(params)) {
+          throw new Error('Invalid parameters');
+        }
+
         this.cities.clear();
         cities.forEach(city => this.cities.set(city.id, city));
+        
+        if (params['departDate']) {
+          this.selectedDepartDate = new Date(params['departDate']);
+        }
+        if (params['returnDate']) {
+          this.selectedReturnDate = new Date(params['returnDate']);
+        }
         
         return { flights, params };
       })
     ).subscribe({
       next: ({ flights, params }) => {
         this.flights = flights;
-        this.applyFilters(params['departure'], params['arrival']);
+        this.departingFlights = this.applyFilters(params['departure'], params['arrival']);
+        this.returningFlights = this.applyFilters(params['arrival'], params['departure']);
         this.setCityNames();
         this.loading = false;
       },
@@ -59,12 +84,33 @@ export class FlightsPageComponent implements OnInit {
         this.error = 'Failed to load flight data. Please try again later.';
         this.loading = false;
         console.error('API Error:', err);
+        this.router.navigate(['/']);
       }
     });
   }
 
-  private applyFilters(departureIata?: string, arrivalIata?: string): void {
-    this.filteredFlights = this.flights.filter(flight => {
+  private validateParameters(params: any): boolean {
+    const requiredParams = [
+      'departure', 
+      'arrival', 
+      'departDate', 
+      'returnDate'
+    ];
+
+    // Check all parameters exist
+    if (!requiredParams.every(p => params[p])) {
+      return false;
+    }
+
+    // Validate date formats
+    const departDate = new Date(params['departDate']);
+    const returnDate = new Date(params['returnDate']);
+    
+    return isValid(departDate) && isValid(returnDate);
+  }
+
+  private applyFilters(departureIata?: string, arrivalIata?: string): Flight[] {
+    return this.flights.filter(flight => {
       const matchesDeparture = !departureIata || 
         flight.departure_airport.IATA_code === departureIata;
       const matchesArrival = !arrivalIata || 
@@ -74,21 +120,13 @@ export class FlightsPageComponent implements OnInit {
   }
 
   private setCityNames(): void {
-    if (this.filteredFlights.length === 0) {
-      this.departureCityName = 'N/A';
-      this.arrivalCityName = 'N/A';
-      return;
+    if (this.departingFlights.length > 0) {
+      const firstFlight = this.departingFlights[0];
+      const depCity = this.cities.get(firstFlight.departure_airport.city);
+      this.departureCityName = depCity?.name || 'Unknown City';
+      const arrCity = this.cities.get(firstFlight.arrival_airport.city);
+      this.arrivalCityName = arrCity?.name || 'Unknown City';
     }
-
-    const firstFlight = this.filteredFlights[0];
-    
-    // Get departure city
-    const depCity = this.cities.get(firstFlight.departure_airport.city);
-    this.departureCityName = depCity?.name || 'Unknown City';
-    
-    // Get arrival city
-    const arrCity = this.cities.get(firstFlight.arrival_airport.city);
-    this.arrivalCityName = arrCity?.name || 'Unknown City';
   }
 
   formatDuration(duration: string): string {

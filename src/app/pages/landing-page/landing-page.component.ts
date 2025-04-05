@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from '../../component/header/header.component';
 import { DatePickerComponent } from '../../component//date-picker/date-picker.component';
@@ -98,17 +98,29 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   onSearchClick() {
     const fromIata = this.flightSearchService.fromIataSubject.value;
     const toIata = this.flightSearchService.toIataSubject.value;
-
+    
+    // Validate all selections
     if (!fromIata || !toIata) {
       alert('Please select both departure and arrival locations');
       return;
     }
-
-    this.router.navigate(['/flights'], {
-      queryParams: {
-        departure: fromIata,
-        arrival: toIata
-      }
-    });
+  
+    if (!this.datePicker.selectedDepartDate || 
+        !this.datePicker.selectedReturnDate) {
+      alert('Please select both departure and return dates');
+      return;
+    }
+  
+    // Proceed with navigation
+    const queryParams = {
+      departure: fromIata,
+      arrival: toIata,
+      departDate: this.datePicker.selectedDepartDate.toISOString(),
+      returnDate: this.datePicker.selectedReturnDate.toISOString()
+    };
+  
+    this.router.navigate(['/flights'], { queryParams });
   }
+
+  @ViewChild(DatePickerComponent) datePicker!: DatePickerComponent;
 }
