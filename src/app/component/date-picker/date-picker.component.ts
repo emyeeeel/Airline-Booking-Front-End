@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { User } from '../../models/user.model';
@@ -10,42 +10,37 @@ import { MatNativeDateModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-date-picker',
-  imports: [CommonModule,
+  standalone: true,
+  imports: [
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
-    MatNativeDateModule],
+    MatNativeDateModule
+  ],
   templateUrl: './date-picker.component.html',
   styleUrl: './date-picker.component.scss'
 })
-export class DatePickerComponent implements OnInit  {
+export class DatePickerComponent implements OnInit, OnChanges {
+  @Input() flightType = 'Round-trip';
   selectedDepartDate: Date | null = null;
   selectedReturnDate: Date | null = null;
   minDate!: Date;
-
-  constructor(private http: HttpClient) {}
-
-  users: User[] = [];
   isLoading = true;
 
   ngOnInit(): void {
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Normalize to start of day
+    today.setHours(0, 0, 0, 0);
     this.minDate = today;
     this.selectedDepartDate = new Date();
+  }
 
-    this.http.get<User[]>('http://127.0.0.1:8000/api/getAllUsers/').subscribe({
-      next: (data) => {
-        this.users = data;
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error fetching users:', error);
-        this.isLoading = false;
-      }
-    });
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['flightType'] && this.flightType === 'One-way') {
+      this.selectedReturnDate = null;
+    }
   }
 
   onReturnDateSelected(event: any): void {

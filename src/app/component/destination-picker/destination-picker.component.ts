@@ -1,5 +1,4 @@
-import { Component, HostListener, ElementRef } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, HostListener, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LocationPopupComponent } from '../location-popup/location-popup.component';
 import { MatInputModule } from '@angular/material/input';
@@ -9,74 +8,89 @@ import { FlightSearchService } from '../../services/flight-search.service';
 
 @Component({
   selector: 'app-destination-picker',
-  imports: [CommonModule,
+  standalone: true,
+  imports: [
+    CommonModule,
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
-    LocationPopupComponent ],
+    LocationPopupComponent
+  ],
   templateUrl: './destination-picker.component.html',
   styleUrl: './destination-picker.component.scss'
 })
 export class DestinationPickerComponent {
-  constructor(private flightSearchService: FlightSearchService) {}
-  selectedFrom: string | null = null;
-  selectedTo: string | null = null;
+  selectedFromCityId: number | null = null;
+  selectedToCityId: number | null = null;
+  selectedFromIata: string | null = null;
+  selectedToIata: string | null = null;
+  displayFrom = 'Select Origin';
+  displayTo = 'Select Destination';
   showFromPopup = false;
   showToPopup = false;
 
-  // Add this method for swapping locations
-  swapLocations(): void {
-    // Swap the values
-    const temp = this.selectedFrom;
-    this.selectedFrom = this.selectedTo;
-    this.selectedTo = temp;
-    
-    // Close any open popups after swap
-    this.showFromPopup = false;
-    this.showToPopup = false;
-  }
+  constructor(private flightSearchService: FlightSearchService) {}
 
-  get displayFromValue(): string {
-    return this.selectedFrom || 'Select Origin';
-  }
-
-  get displayToValue(): string {
-    return this.selectedTo || 'Select Destination';
-  }
+  // Update EventEmitter types to match service expectations
+  @Output() fromSelected = new EventEmitter<string | null>();
+  @Output() toSelected = new EventEmitter<string | null>();
 
   handleFromClick(): void {
     this.showFromPopup = !this.showFromPopup;
     this.showToPopup = false;
   }
-  
+
   handleToClick(): void {
     this.showToPopup = !this.showToPopup;
     this.showFromPopup = false;
   }
 
-  handleLocationSelected(location: string, type: 'from' | 'to'): void {
+  handleLocationSelected(
+    event: { displayName: string; iataCode: string | undefined; cityId: number }, 
+    type: 'from' | 'to'
+  ): void {
+    // Convert undefined to null for type consistency
+    const iataCode = event.iataCode ?? null;
+
     if (type === 'from') {
-      this.selectedFrom = location;
-      this.flightSearchService.setFromIata(location);
+      this.selectedFromCityId = event.cityId;
+      this.selectedFromIata = iataCode;
+      this.displayFrom = event.displayName;
+      this.flightSearchService.setFromIata(iataCode);
+      this.fromSelected.emit(iataCode);
     } else {
-      this.selectedTo = location;
-      this.flightSearchService.setToIata(location);
+      this.selectedToCityId = event.cityId;
+      this.selectedToIata = iataCode;
+      this.displayTo = event.displayName;
+      this.flightSearchService.setToIata(iataCode);
+      this.toSelected.emit(iataCode);
     }
+
+    this.closePopups();
+  }
+
+  // Rest of the component remains the same
+  swapLocations(): void {
+    [this.selectedFromCityId, this.selectedToCityId] = [this.selectedToCityId, this.selectedFromCityId];
+    [this.selectedFromIata, this.selectedToIata] = [this.selectedToIata, this.selectedFromIata];
+    [this.displayFrom, this.displayTo] = [this.displayTo, this.displayFrom];
     
-    // Close popups
-    type === 'from' 
-      ? this.showFromPopup = false 
-      : this.showToPopup = false;
+    this.flightSearchService.setFromIata(this.selectedFromIata);
+    this.flightSearchService.setToIata(this.selectedToIata);
+    
+    this.closePopups();
+  }
+
+  private closePopups(): void {
+    this.showFromPopup = false;
+    this.showToPopup = false;
   }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     const target = event.target as HTMLElement;
-    const clickedInsideComponent = target.closest('.location-picker-element');
-    
-    if (!clickedInsideComponent) {
-      this.showFromPopup = false;
-      this.showToPopup = false;
+    if (!target.closest('.location-picker-element')) {
+      this.closePopups();
     }
   }
 }

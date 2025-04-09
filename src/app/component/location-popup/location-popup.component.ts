@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Country } from '../../models/country.model';
@@ -12,7 +12,13 @@ import { City } from '../../models/city.model';
   styleUrl: './location-popup.component.scss'
 })
 export class LocationPopupComponent {
-  @Output() locationSelected = new EventEmitter<string>();
+  @Input() excludedCityId: number | null = null;
+  @Output() locationSelected = new EventEmitter<{ 
+    displayName: string; 
+    iataCode: string | undefined; 
+    cityId: number 
+  }>();
+
   countries: Country[] = [];
   isLoading = true;
   expandedCountries = new Set<number>();
@@ -37,25 +43,36 @@ export class LocationPopupComponent {
     });
   }
 
+  get filteredCountries(): Country[] {
+    if (!this.excludedCityId) return this.countries;
+
+    return this.countries
+      .map(country => ({
+        ...country,
+        cities: country.cities.filter(city => city.id !== this.excludedCityId)
+      }))
+      .filter(country => country.cities.length > 0);
+  }
+
   toggleCountry(countryId: number): void {
-    const newSet = new Set(this.expandedCountries);
-    newSet.has(countryId) ? newSet.delete(countryId) : newSet.add(countryId);
-    this.expandedCountries = newSet;
+    this.expandedCountries.has(countryId) 
+      ? this.expandedCountries.delete(countryId) 
+      : this.expandedCountries.add(countryId);
   }
 
   selectCity(city: City): void {
-    if (city.airports?.length > 0) {
-      // Get first airport's IATA code (modify if you need different logic)
-      const iataCode = city.airports[0].IATA_code;
-      this.locationSelected.emit(`${city.name} (${iataCode})`);
-    } else {
-      // Fallback to just city name if no airports
-      this.locationSelected.emit(city.name);
-    }
+    const displayName = city.airports?.length > 0
+      ? `${city.name} (${city.airports[0].IATA_code})`
+      : city.name;
+
+    this.locationSelected.emit({
+      displayName,
+      iataCode: city.airports?.[0]?.IATA_code,
+      cityId: city.id
+    });
   }
 
-  // location-popup.component.ts
   getAirportCodes(city: City): string {
-    return city.airports.map(a => a.IATA_code).join(', ');
+    return city.airports?.map(a => a.IATA_code).join(', ') || '';
   }
 }

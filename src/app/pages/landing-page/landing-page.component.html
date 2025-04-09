@@ -14,9 +14,9 @@
         <img class="ng-tns-c13-13" src="https://cdn.media.amplience.net/i/cebupacificair/Flight-Icon?fmt=auto&amp;maxW=1920&amp;maxH=1920">
         <p>Flight</p>
         <select class="flight-type-dropdown" [(ngModel)]="selectedFlightType">
-          <option value="round-trip">Round-trip</option>
-          <option value="one-way">One-way</option>
-          <option value="multi-city">Multi-city</option>
+          <option value="Round-trip">Round-trip</option>
+          <option value="One-way">One-way</option>
+          <option value="Multi-city">Multi-city</option>
         </select>
       </div>
     
@@ -26,40 +26,24 @@
           <app-destination-picker></app-destination-picker>
         </div>
         <div class="date-container">
-          <app-date-picker></app-date-picker>
+          <app-date-picker [flightType]="selectedFlightType"></app-date-picker>
         </div>
         <div class="button-container">
-          <app-search-flight-button (searchClicked)="onSearchClick()"></app-search-flight-button>
+          <app-search-flight-button (searchClicked)="onSearchClick()" [text]="searchButtonText"></app-search-flight-button>
         </div>
       </div>
     </div>
 
-    <div class="sns-stories">
-      <ul>
-        <li class="story-list">
-          <img src="https://web-image.useinsider.com/cebupacific/defaultImageLibrary/1-1730702163.png" alt="story">
-          <p>Clark</p>
-        </li>
-        <li class="story-list">
-          <img src="https://web-image.useinsider.com/cebupacific/defaultImageLibrary/2-1730702183.png" alt="story">
-          <p>Cebu</p>
-        </li>
-        <li class="story-list"> 
-          <img src="https://web-image.useinsider.com/cebupacific/defaultImageLibrary/ILO-1730702294.png" alt="story">
-          <p>Iloilo</p>
-        </li>
-        <li class="story-list">
-          <img src="https://web-image.useinsider.com/cebupacific/defaultImageLibrary/4-1730702311.png" alt="story">
-          <p>Davao</p>
-        </li>
-        <li class="story-list">
-          <img src="https://web-image.useinsider.com/cebupacific/defaultImageLibrary/InStory%20Cover-1730702355.png" alt="story">
-          <p>New Ceb Routes</p>
-        </li>
-      </ul>
-    </div>
+    <app-sns-stories></app-sns-stories>
+    
+    <hr>
+
+    <app-advertisement></app-advertisement>
+
+    <app-cheap-flights></app-cheap-flights>
+    
   </main>
-  
+  <app-home-footer></app-home-footer>
   
   <router-outlet />
   

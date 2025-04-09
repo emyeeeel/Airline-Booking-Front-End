@@ -10,18 +10,25 @@ import { Subscription } from 'rxjs';
 import { FlightSearchService } from '../../services/flight-search.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { HomeFooterComponent } from '../../component/home-footer/home-footer.component';
+import { SnsStoriesComponent } from '../../component/sns-stories/sns-stories.component';
+import { AdvertisementComponent } from '../../component/advertisement/advertisement.component';
+import { CheapFlightsComponent } from '../../component/cheap-flights/cheap-flights.component';
 
 @Component({
   selector: 'app-landing-page',
-  imports: [RouterOutlet, HeaderComponent, DestinationPickerComponent, DatePickerComponent, SearchFlightButtonComponent,  CommonModule, FormsModule], 
+  imports: [RouterOutlet, HeaderComponent, CheapFlightsComponent, DestinationPickerComponent, DatePickerComponent, SearchFlightButtonComponent, CommonModule, FormsModule, HomeFooterComponent, SnsStoriesComponent, AdvertisementComponent], 
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss'
 })
 export class LandingPageComponent implements OnInit, OnDestroy {
-
+  searchButtonText = "Search Flights";
+  seeMoreText = "See more";
   user: any;
   private userSubscription!: Subscription;
-  selectedFlightType = 'round-trip';
+  selectedFlightType = 'Round-trip';
+
+  @ViewChild(DatePickerComponent) datePicker!: DatePickerComponent;
 
   constructor(
     private authService: AuthService,
@@ -33,7 +40,6 @@ export class LandingPageComponent implements OnInit, OnDestroy {
     this.startCarousel();
     this.preloadImages();
     
-    // Subscribe to authentication changes
     this.userSubscription = this.authService.user$.subscribe(user => {
       this.user = user;
     });
@@ -99,29 +105,41 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   onSearchClick() {
     const fromIata = this.flightSearchService.fromIataSubject.value;
     const toIata = this.flightSearchService.toIataSubject.value;
-    
-    // Validate all selections
+  
+    // Always require departure and arrival locations
     if (!fromIata || !toIata) {
       alert('Please select both departure and arrival locations');
       return;
     }
   
-    if (!this.datePicker.selectedDepartDate || 
-        !this.datePicker.selectedReturnDate) {
-      alert('Please select both departure and return dates');
+    // Always require departure date
+    if (!this.datePicker.selectedDepartDate) {
+      alert('Please select a departure date');
+      return;
+    }
+  
+    // Conditionally require return date
+    if (this.selectedFlightType === 'Round-trip' && !this.datePicker.selectedReturnDate) {
+      alert('Please select a return date for round-trip flights');
       return;
     }
   
     // Proceed with navigation
-    const queryParams = {
+    const queryParams: any = {
       departure: fromIata,
       arrival: toIata,
       departDate: this.datePicker.selectedDepartDate.toISOString(),
-      returnDate: this.datePicker.selectedReturnDate.toISOString()
+      flightType: this.selectedFlightType
     };
+  
+    if (this.selectedFlightType === 'Round-trip' && this.datePicker.selectedReturnDate) {
+      queryParams.returnDate = this.datePicker.selectedReturnDate.toISOString();
+    }
   
     this.router.navigate(['/flights'], { queryParams });
   }
 
-  @ViewChild(DatePickerComponent) datePicker!: DatePickerComponent;
+  popup(){
+    this.router.navigate(['/test']);
+  }
 }

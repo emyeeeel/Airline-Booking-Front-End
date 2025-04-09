@@ -1,0 +1,137 @@
+@use 'sass:map';
+
+// Z-index Management
+$z-index: (
+  background: 0,
+  background-element: 1,
+  overlay: 2,
+  background-text: 3,
+  booking-container: 20,
+  content: 11,
+  controls: 12,
+  date-picker: 13,
+  dropdown: 20,
+  dropdown-menu: 1000,
+);
+
+// Cheap Flights Section
+.cheap-flights {
+  padding: 80px 0;
+  background: #f7f7f7;
+  position: relative;
+  z-index: map.get($z-index, content);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    height: auto;
+    padding: 40px 0;
+  }
+}
+
+.locations-list {
+  margin-bottom: 32px;
+
+  ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 16px;
+
+    li {
+      font-weight: bold;
+      color: #333;
+    }
+  }
+}
+
+.parent {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 193px;
+    gap: 16px;
+    justify-items: center;
+  
+    div {
+      position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 5px;
+  
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 4px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+  
+      .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.6) 0%,
+          rgba(0, 0, 0, 0.35) 40%,
+          rgba(0, 0, 0, 0.1) 80%,
+          rgba(0, 0, 0, 0) 100%
+        );
+        z-index: 1;
+      }
+      
+      .overlay-text {
+        position: absolute;
+        bottom: 12px;
+        left: 12px;
+        color: #fff;
+        font-size: 16px;
+        font-weight: bold;
+        z-index: 2; 
+      }
+    }
+  }
+  
+
+// Define specific placement for each image
+.div1 {
+  grid-row: span 2;
+  width: 275px;
+}
+
+.div2 {
+  grid-row: span 1;
+  width: 275px;
+}
+
+.div3 {
+  grid-row: span 2;
+  width: 275px;
+}
+
+.div4 {
+  grid-column: 1;
+  grid-row: 3;
+  width: 275px;
+}
+
+.div5 {
+  grid-column: 2;
+  grid-row: 2 / span 2;
+  width: 275px;
+}
+
+.div6 {
+  grid-column: 3;
+  grid-row: 3;
+  width: 275px;
+}
+
+.note {
+  margin-top: 16px;
+  font-size: 14px;
+  color: #777;
+}

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Flight } from '../../models/flight.model';
@@ -7,14 +7,20 @@ import { HeaderComponent } from "../../component/header/header.component";
 import { City } from '../../models/city.model';
 import { combineLatest, map } from 'rxjs';
 import { isValid } from 'date-fns';
+import { FooterComponent } from '../../component/footer/footer.component';
+import { BookingProgressComponent } from '../../component/booking-progress/booking-progress.component';
+import { FlightDetailsComponent } from '../../component/flight-details/flight-details.component';
+import { SearchFlightButtonComponent } from '../../component/search-flight-button/search-flight-button.component';
+import { FlightFooterComponent } from '../../component/flight-footer/flight-footer.component';
 
 @Component({
   selector: 'app-flights-page',
-  imports: [CommonModule, HeaderComponent],
+  imports: [CommonModule, HeaderComponent, FooterComponent, BookingProgressComponent, FlightDetailsComponent, SearchFlightButtonComponent, FlightFooterComponent],
   templateUrl: './flights-page.component.html',
   styleUrl: './flights-page.component.scss'
 })
 export class FlightsPageComponent implements OnInit {
+  searchButtonText = "Continue";
   flights: Flight[] = [];
   departingFlights: Flight[] = [];
   returningFlights: Flight[] = [];
@@ -27,6 +33,8 @@ export class FlightsPageComponent implements OnInit {
   selectedReturnDate?: Date;
   selectedDepartingFlight: Flight | null = null;
   selectedReturningFlight: Flight | null = null;
+  currentStepIndex = 0;
+  flightType = 'Round-trip'; 
 
   private apiBase = 'http://127.0.0.1:8000/api/';
 
@@ -68,6 +76,7 @@ export class FlightsPageComponent implements OnInit {
 
     combineLatest([cities$, flights$, params$]).pipe(
       map(([cities, flights, params]) => {
+        this.flightType = params['flightType'] || 'Round-trip';
         if (!this.validateParameters(params)) {
           throw new Error('Invalid parameters');
         }
@@ -102,23 +111,29 @@ export class FlightsPageComponent implements OnInit {
   }
 
   private validateParameters(params: any): boolean {
-    const requiredParams = [
-      'departure', 
-      'arrival', 
-      'departDate', 
-      'returnDate'
-    ];
-
-    // Check all parameters exist
+    const requiredParams = ['departure', 'arrival', 'departDate'];
+    const flightType = params['flightType'] || 'Round-trip'; // Default to Round-trip if missing
+  
+    // Add returnDate check only for Round-trip
+    if (flightType === 'Round-trip') {
+      requiredParams.push('returnDate');
+    }
+  
+    // Check all required parameters exist
     if (!requiredParams.every(p => params[p])) {
       return false;
     }
-
+  
     // Validate date formats
     const departDate = new Date(params['departDate']);
-    const returnDate = new Date(params['returnDate']);
-    
-    return isValid(departDate) && isValid(returnDate);
+    if (!isValid(departDate)) return false;
+  
+    if (flightType === 'Round-trip') {
+      const returnDate = new Date(params['returnDate']);
+      if (!isValid(returnDate)) return false;
+    }
+  
+    return true;
   }
 
   private applyFilters(departureIata?: string, arrivalIata?: string): Flight[] {
@@ -159,5 +174,10 @@ export class FlightsPageComponent implements OnInit {
 
     const [hours, minutes] = duration.split(':');
     return `${parseInt(hours, 10)}h ${minutes.padStart(2, '0')}m`;
+  }
+
+  navigateToBookingSummary(event?: Event) {
+    event?.preventDefault();
+    this.router.navigate(['/booking']);
   }
 }

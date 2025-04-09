@@ -6,24 +6,25 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class FlightSearchService {
+  // Subjects with initial null values
   public fromIataSubject = new BehaviorSubject<string | null>(null);
-  fromIata$ = this.fromIataSubject.asObservable();
-
   public toIataSubject = new BehaviorSubject<string | null>(null);
+
+  // Observables
+  fromIata$ = this.fromIataSubject.asObservable();
   toIata$ = this.toIataSubject.asObservable();
 
-  setFromIata(locationString: string): void {
-    const iata = this.extractIataCode(locationString);
+  setFromIata(iata: string | null): void {
     this.fromIataSubject.next(iata);
   }
 
-  setToIata(locationString: string): void {
-    const iata = this.extractIataCode(locationString);
+  setToIata(iata: string | null): void {
     this.toIataSubject.next(iata);
   }
 
-  public extractIataCode(locationString: string): string | null {
-    const iataMatch = locationString.match(/\(([A-Z]{3})\)/);
-    return iataMatch ? iataMatch[1] : null;
+  // Optional: Helper method to clear both values
+  clearSelection() {
+    this.fromIataSubject.next(null);
+    this.toIataSubject.next(null);
   }
 }
