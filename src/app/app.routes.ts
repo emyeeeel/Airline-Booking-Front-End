@@ -13,6 +13,10 @@ import { SearchFlightPopupComponent } from './component/search-flight-popup/sear
 import { SnsStoriesComponent } from './component/sns-stories/sns-stories.component';
 import { CheapFlightsComponent } from './component/cheap-flights/cheap-flights.component';
 import { FlightDetailsComponent } from './component/flight-details/flight-details.component';
+import { GuestDetailsComponent } from './pages/guest-details/guest-details.component';
+import { GuestInfoComponent } from './component/guest-info/guest-info.component';
+import { LoaderComponent } from './component/loader/loader.component';
+
 
 export const routes: Routes = [
     {
@@ -41,7 +45,19 @@ export const routes: Routes = [
         component: BookingSummaryPageComponent
     },
     {
+        path: 'search-flight',
+        component: SearchFlightPopupComponent
+    },
+    {
+        path: 'guest-details',
+        component: GuestDetailsComponent
+    },
+    {
         path: 'test',
-        component: BookingSummaryPageComponent
+        component: GuestInfoComponent
+    },
+    {
+        path: 'loader',
+        component: LoaderComponent
     },
 ];

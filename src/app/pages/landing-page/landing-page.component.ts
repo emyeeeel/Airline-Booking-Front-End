@@ -14,10 +14,11 @@ import { HomeFooterComponent } from '../../component/home-footer/home-footer.com
 import { SnsStoriesComponent } from '../../component/sns-stories/sns-stories.component';
 import { AdvertisementComponent } from '../../component/advertisement/advertisement.component';
 import { CheapFlightsComponent } from '../../component/cheap-flights/cheap-flights.component';
+import { SearchFlightPopupComponent } from '../../component/search-flight-popup/search-flight-popup.component';
 
 @Component({
   selector: 'app-landing-page',
-  imports: [RouterOutlet, HeaderComponent, CheapFlightsComponent, DestinationPickerComponent, DatePickerComponent, SearchFlightButtonComponent, CommonModule, FormsModule, HomeFooterComponent, SnsStoriesComponent, AdvertisementComponent], 
+  imports: [RouterOutlet, HeaderComponent, SearchFlightPopupComponent, CheapFlightsComponent, DestinationPickerComponent, DatePickerComponent, SearchFlightButtonComponent, CommonModule, FormsModule, HomeFooterComponent, SnsStoriesComponent, AdvertisementComponent], 
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss'
 })
@@ -27,6 +28,8 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   user: any;
   private userSubscription!: Subscription;
   selectedFlightType = 'Round-trip';
+  showSearchPopup = false;
+  
 
   @ViewChild(DatePickerComponent) datePicker!: DatePickerComponent;
 
@@ -103,40 +106,8 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   }
 
   onSearchClick() {
-    const fromIata = this.flightSearchService.fromIataSubject.value;
-    const toIata = this.flightSearchService.toIataSubject.value;
-  
-    // Always require departure and arrival locations
-    if (!fromIata || !toIata) {
-      alert('Please select both departure and arrival locations');
-      return;
-    }
-  
-    // Always require departure date
-    if (!this.datePicker.selectedDepartDate) {
-      alert('Please select a departure date');
-      return;
-    }
-  
-    // Conditionally require return date
-    if (this.selectedFlightType === 'Round-trip' && !this.datePicker.selectedReturnDate) {
-      alert('Please select a return date for round-trip flights');
-      return;
-    }
-  
-    // Proceed with navigation
-    const queryParams: any = {
-      departure: fromIata,
-      arrival: toIata,
-      departDate: this.datePicker.selectedDepartDate.toISOString(),
-      flightType: this.selectedFlightType
-    };
-  
-    if (this.selectedFlightType === 'Round-trip' && this.datePicker.selectedReturnDate) {
-      queryParams.returnDate = this.datePicker.selectedReturnDate.toISOString();
-    }
-  
-    this.router.navigate(['/flights'], { queryParams });
+
+    this.showSearchPopup = true;
   }
 
   popup(){

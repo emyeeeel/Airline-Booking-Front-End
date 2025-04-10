@@ -1,25 +1,22 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
-import { Flight } from '../../models/flight.model';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component } from '@angular/core';
+import { FooterComponent } from "../../component/footer/footer.component";
+import { FlightDetailsComponent } from "../../component/flight-details/flight-details.component";
 import { HeaderComponent } from "../../component/header/header.component";
+import { BookingProgressComponent } from "../../component/booking-progress/booking-progress.component";
+import { Flight } from '../../models/flight.model';
 import { City } from '../../models/city.model';
+import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, map } from 'rxjs';
 import { isValid } from 'date-fns';
-import { FooterComponent } from '../../component/footer/footer.component';
-import { BookingProgressComponent } from '../../component/booking-progress/booking-progress.component';
-import { FlightDetailsComponent } from '../../component/flight-details/flight-details.component';
-import { SearchFlightButtonComponent } from '../../component/search-flight-button/search-flight-button.component';
-import { FlightFooterComponent } from '../../component/flight-footer/flight-footer.component';
 
 @Component({
-  selector: 'app-flights-page',
-  imports: [CommonModule, HeaderComponent, FooterComponent, BookingProgressComponent, FlightDetailsComponent, SearchFlightButtonComponent, FlightFooterComponent],
-  templateUrl: './flights-page.component.html',
-  styleUrl: './flights-page.component.scss'
+  selector: 'app-guest-details',
+  imports: [FooterComponent, FlightDetailsComponent, HeaderComponent, BookingProgressComponent],
+  templateUrl: './guest-details.component.html',
+  styleUrl: './guest-details.component.scss'
 })
-export class FlightsPageComponent implements OnInit {
+export class GuestDetailsComponent {
   searchButtonText = "Continue";
   flights: Flight[] = [];
   departingFlights: Flight[] = [];
@@ -33,7 +30,7 @@ export class FlightsPageComponent implements OnInit {
   selectedReturnDate?: Date;
   selectedDepartingFlight: Flight | null = null;
   selectedReturningFlight: Flight | null = null;
-  currentStepIndex = 0;
+  currentStepIndex = 1;
   flightType = 'Round-trip'; 
 
   adults = 0;
@@ -201,9 +198,7 @@ export class FlightsPageComponent implements OnInit {
   navigateToBookingSummary(event?: Event) {
     event?.preventDefault();
     if (!this.isButtonEnabled) return;
-    this.router.navigate(['/guest-details'], { 
-      queryParams: this.route.snapshot.queryParams 
-    });
+    this.router.navigate(['/booking']);
   }
 
   get isButtonEnabled(): boolean {

@@ -77,7 +77,7 @@
               <p>PHP {{ flight.price | number:'1.2-2' }}</p>
             </div>
           </div>
-          <div *ngIf="departingFlights.length === 0 && returningFlights.length > 0" 
+          <div *ngIf="departingFlights.length === 0 && flightType === 'Round-trip'" 
                 class="no-flights-in-section">
             No departing flights found
           </div>
@@ -86,7 +86,9 @@
   
         
   
-          <hr *ngIf="returningFlights.length > 0 && flightType === 'Round-trip'">
+          <div class="divider" *ngIf="returningFlights.length > 0 && flightType === 'Round-trip'">
+            <hr>
+          </div>
   
           
           <div class="flight-section" *ngIf="returningFlights.length > 0 && flightType === 'Round-trip'">
@@ -138,7 +140,7 @@
               </div>
             </div>
   
-            <div *ngIf="returningFlights.length === 0 && departingFlights.length > 0" 
+            <div *ngIf="returningFlights.length === 0 && flightType !== 'Round-trip'" 
                   class="no-flights-in-section">
               No returning flights found
             </div>
@@ -150,9 +152,13 @@
   
           <div class="buttons-container">
             <button class="back-button" type="button">
-              <a href="/landing">Back</a>
+              <a href="/search-flight">Back</a>
             </button>
-            <app-search-flight-button [text]="searchButtonText" (searchClicked)="navigateToBookingSummary()"></app-search-flight-button>
+            <app-search-flight-button 
+              [text]="searchButtonText" 
+              [selected]="isButtonEnabled"
+              (searchClicked)="navigateToBookingSummary()">
+            </app-search-flight-button>
           </div>
       </div>
     </div>

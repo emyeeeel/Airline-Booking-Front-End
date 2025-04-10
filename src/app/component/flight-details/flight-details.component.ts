@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { Flight } from '../../models/flight.model';
 import { City } from '../../models/city.model';
 import { combineLatest, map } from 'rxjs';
@@ -27,7 +27,11 @@ export class FlightDetailsComponent {
   selectedReturnDate?: Date;
   selectedDepartingFlight: Flight | null = null;
   selectedReturningFlight: Flight | null = null;
-  currentStepIndex = 0;
+
+  adults = 0;
+  children = 0;
+  infants = 0;
+  totalPassengers = 0;
 
   private apiBase = 'http://127.0.0.1:8000/api/';
 
@@ -37,141 +41,116 @@ export class FlightDetailsComponent {
     private router: Router
   ) { }
 
-  onDepartingFlightSelect(flight: Flight): void {
-    this.selectedDepartingFlight = 
-      this.selectedDepartingFlight === flight ? null : flight;
-  }
-  
-  onReturningFlightSelect(flight: Flight): void {
-    this.selectedReturningFlight = 
-      this.selectedReturningFlight === flight ? null : flight;
+  get passengerSummary(): string {
+    const parts = [];
+    if (this.adults) parts.push(`${this.adults} Adult${this.adults > 1 ? 's' : ''}`);
+    if (this.children) parts.push(`${this.children} Child${this.children > 1 ? 'ren' : ''}`);
+    if (this.infants) parts.push(`${this.infants} Infant${this.infants > 1 ? 's' : ''}`);
+    return parts.join(', ');
   }
 
   ngOnInit(): void {
     this.loadData();
   }
 
-  scrollTo(fragment: string): void {
-    const element = document.getElementById(fragment);
-    if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start',
-        inline: 'nearest'
-      });
-    }
+  private loadData(): void {
+    combineLatest([
+      this.http.get<City[]>(`${this.apiBase}cities/`),
+      this.http.get<Flight[]>(`${this.apiBase}flights/`),
+      this.route.queryParams
+    ]).pipe(map(([cities, flights, params]) => {
+      this.adults = Number(params['adults']) || 0;
+      this.children = Number(params['children']) || 0;
+      this.infants = Number(params['infants']) || 0;
+      this.totalPassengers = this.adults + this.children + this.infants;
+      this.flightType = params['flightType'] || 'Round-trip';
+
+      if (!this.validateParameters(params)) throw new Error('Invalid parameters');
+
+      this.cities.clear();
+      cities.forEach(city => this.cities.set(city.id, city));
+      
+      this.selectedDepartDate = params['departDate'] ? new Date(params['departDate']) : undefined;
+      this.selectedReturnDate = params['returnDate'] ? new Date(params['returnDate']) : undefined;
+
+      return { flights, params };
+    })).subscribe({
+      next: ({ flights, params }) => this.handleDataSuccess(flights, params),
+      error: (err) => this.handleDataError(err)
+    });
   }
 
-  private loadData(): void {
-    const cities$ = this.http.get<City[]>(`${this.apiBase}cities/`);
-    const flights$ = this.http.get<Flight[]>(`${this.apiBase}flights/`);
-    const params$ = this.route.queryParams;
+  private handleDataSuccess(flights: Flight[], params: any): void {
+    this.flights = flights;
+    this.departingFlights = this.filterFlights(params['departure'], params['arrival']);
+    this.returningFlights = this.filterFlights(params['arrival'], params['departure']);
+    this.setCityNames();
+    this.loading = false;
+  }
 
-    combineLatest([cities$, flights$, params$]).pipe(
-      map(([cities, flights, params]) => {
-        this.flightType = params['flightType'] || 'Round-trip';
-        
-        if (!this.validateParameters(params)) {
-          throw new Error('Invalid parameters');
-        }
-
-        this.cities.clear();
-        cities.forEach(city => this.cities.set(city.id, city));
-        
-        if (params['departDate']) {
-          this.selectedDepartDate = new Date(params['departDate']);
-        }
-        if (params['returnDate']) {
-          this.selectedReturnDate = new Date(params['returnDate']);
-        }
-        
-        return { flights, params };
-      })
-    ).subscribe({
-      next: ({ flights, params }) => {
-        this.flights = flights;
-        this.departingFlights = this.applyFilters(params['departure'], params['arrival']);
-        this.returningFlights = this.applyFilters(params['arrival'], params['departure']);
-        this.setCityNames();
-        this.loading = false;
-      },
-      error: (err) => {
-        this.error = 'Failed to load flight data. Please try again later.';
-        this.loading = false;
-        console.error('API Error:', err);
-        this.router.navigate(['/']);
-      }
-    });
+  private handleDataError(err: any): void {
+    this.error = 'Failed to load flight data. Please try again later.';
+    this.loading = false;
+    console.error('API Error:', err);
+    this.router.navigate(['/']);
   }
 
   private validateParameters(params: any): boolean {
     const requiredParams = ['departure', 'arrival', 'departDate'];
-    const flightType = params['flightType'] || 'Round-trip'; // Default to Round-trip if missing
-  
-    // Add returnDate check only for Round-trip
-    if (flightType === 'Round-trip') {
-      requiredParams.push('returnDate');
-    }
-  
-    // Check all required parameters exist
-    if (!requiredParams.every(p => params[p])) {
-      return false;
-    }
-  
-    // Validate date formats
+    if (this.flightType === 'Round-trip') requiredParams.push('returnDate');
+    if (!requiredParams.every(p => params[p])) return false;
+
     const departDate = new Date(params['departDate']);
     if (!isValid(departDate)) return false;
-  
-    if (flightType === 'Round-trip') {
+
+    if (this.flightType === 'Round-trip') {
       const returnDate = new Date(params['returnDate']);
       if (!isValid(returnDate)) return false;
     }
-  
-    return true;
+
+    return this.totalPassengers > 0;
   }
 
-  private applyFilters(departureIata?: string, arrivalIata?: string): Flight[] {
-    return this.flights.filter(flight => {
-      const matchesDeparture = !departureIata || 
-        flight.departure_airport.IATA_code === departureIata;
-      const matchesArrival = !arrivalIata || 
-        flight.arrival_airport.IATA_code === arrivalIata;
-      return matchesDeparture && matchesArrival;
-    });
+  private filterFlights(departureIata: string, arrivalIata: string): Flight[] {
+    return this.flights.filter(flight => 
+      flight.departure_airport.IATA_code === departureIata && 
+      flight.arrival_airport.IATA_code === arrivalIata
+    );
   }
 
   private setCityNames(): void {
-    if (this.departingFlights.length > 0) {
-      const firstFlight = this.departingFlights[0];
-      const depCity = this.cities.get(firstFlight.departure_airport.city);
-      this.departureCityName = depCity?.name || 'Unknown City';
-      const arrCity = this.cities.get(firstFlight.arrival_airport.city);
-      this.arrivalCityName = arrCity?.name || 'Unknown City';
-    }
+    if (!this.departingFlights.length) return;
+
+    const firstFlight = this.departingFlights[0];
+    this.departureCityName = this.cities.get(firstFlight.departure_airport.city)?.name || 'Unknown City';
+    this.arrivalCityName = this.cities.get(firstFlight.arrival_airport.city)?.name || 'Unknown City';
   }
 
   formatDuration(duration: string): string {
     if (/^\d+$/.test(duration)) {
       const totalMinutes = parseInt(duration, 10);
-      const hours = Math.floor(totalMinutes / 60);
-      const minutes = totalMinutes % 60;
-      return `${hours}h ${minutes.toString().padStart(2, '0')}m`;
+      return `${Math.floor(totalMinutes/60)}h ${(totalMinutes%60).toString().padStart(2, '0')}m`;
     }
 
     if (duration.startsWith('PT')) {
-      const hoursMatch = duration.match(/(\d+)H/);
-      const minutesMatch = duration.match(/(\d+)M/);
-      const hours = hoursMatch ? hoursMatch[1] : '0';
-      const minutes = minutesMatch ? minutesMatch[1] : '00';
-      return `${parseInt(hours, 10)}h ${minutes.padStart(2, '0')}m`;
+      const [h, m] = [duration.match(/(\d+)H/)?.[1] || 0, duration.match(/(\d+)M/)?.[1] || '00'];
+      return `${h}h ${m.padStart(2, '0')}m`;
     }
 
-    const [hours, minutes] = duration.split(':');
-    return `${parseInt(hours, 10)}h ${minutes.padStart(2, '0')}m`;
+    const [h, m] = duration.split(':');
+    return `${h}h ${m.padStart(2, '0')}m`;
   }
 
-  navigateToBookingSummary(event?: Event) {
-  event?.preventDefault();
-  this.router.navigate(['/booking']);
-}
+  onDepartingFlightSelect(flight: Flight): void {
+    this.selectedDepartingFlight = this.selectedDepartingFlight === flight ? null : flight;
+  }
+
+  onReturningFlightSelect(flight: Flight): void {
+    this.selectedReturningFlight = this.selectedReturningFlight === flight ? null : flight;
+  }
+
+  navigateToBookingSummary(event?: Event): void {
+    event?.preventDefault();
+    this.router.navigate(['/booking']);
+  }
 }

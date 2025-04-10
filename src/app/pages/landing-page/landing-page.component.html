@@ -42,7 +42,15 @@
 
     <app-cheap-flights></app-cheap-flights>
     
+    <app-search-flight-popup 
+      *ngIf="showSearchPopup"
+      (close)="showSearchPopup = false"
+    ></app-search-flight-popup>
   </main>
+  <app-search-flight-popup 
+  *ngIf="showSearchPopup"
+  (close)="showSearchPopup = false"
+></app-search-flight-popup>
   <app-home-footer></app-home-footer>
   
   <router-outlet />
