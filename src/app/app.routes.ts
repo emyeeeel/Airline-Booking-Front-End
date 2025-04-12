@@ -4,18 +4,13 @@ import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { SignupPageComponent } from './pages/signup-page/signup-page.component';
 import { FlightsPageComponent } from './pages/flights-page/flights-page.component';
 import { BookingSummaryPageComponent } from './pages/booking-summary-page/booking-summary-page.component';
-import { BookingProgressComponent } from './component/booking-progress/booking-progress.component';
-import { FooterComponent } from './component/footer/footer.component';
-import { HomeFooterComponent } from './component/home-footer/home-footer.component';
-import { DepartingListComponent } from './component/departing-list/departing-list.component';
-import { FlightFooterComponent } from './component/flight-footer/flight-footer.component';
 import { SearchFlightPopupComponent } from './component/search-flight-popup/search-flight-popup.component';
-import { SnsStoriesComponent } from './component/sns-stories/sns-stories.component';
-import { CheapFlightsComponent } from './component/cheap-flights/cheap-flights.component';
-import { FlightDetailsComponent } from './component/flight-details/flight-details.component';
-import { GuestDetailsComponent } from './pages/guest-details/guest-details.component';
 import { GuestInfoComponent } from './component/guest-info/guest-info.component';
 import { LoaderComponent } from './component/loader/loader.component';
+import { GuestDetailsPageComponent } from './pages/guest-details-page/guest-details-page.component';
+import { AddOnsPageComponent } from './pages/add-ons-page/add-ons-page.component';
+import { ConfirmationPageComponent } from './pages/confirmation-page/confirmation-page.component';
+import { FlightBundlesComponent } from './component/flight-bundles/flight-bundles.component';
 
 
 export const routes: Routes = [
@@ -50,11 +45,19 @@ export const routes: Routes = [
     },
     {
         path: 'guest-details',
-        component: GuestDetailsComponent
+        component: GuestDetailsPageComponent
+    },
+    {
+        path: 'add-ons',
+        component: AddOnsPageComponent
+    },
+    {
+        path: 'confirmation',
+        component: ConfirmationPageComponent
     },
     {
         path: 'test',
-        component: GuestInfoComponent
+        component: FlightBundlesComponent
     },
     {
         path: 'loader',

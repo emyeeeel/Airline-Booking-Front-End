@@ -1,12 +1,12 @@
 <app-header [isHoveredByDefault]="true"></app-header>
-
+<app-loader *ngIf="loading"></app-loader>
 <div class="flights-wrapper">
   <div class="flights-container">
     <div *ngIf="departingFlights.length === 0 && returningFlights.length === 0" class="no-flights">
       No flights available
     </div>
     
-    <app-flight-details></app-flight-details>
+    <app-flight-details *ngIf="!(departingFlights.length === 0 && returningFlights.length === 0)"></app-flight-details>
 
     <app-booking-progress [selectedIndex]="currentStepIndex"></app-booking-progress>
 
@@ -157,7 +157,7 @@
             <app-search-flight-button 
               [text]="searchButtonText" 
               [selected]="isButtonEnabled"
-              (searchClicked)="navigateToBookingSummary()">
+              (searchClicked)="navigateToGuestDetails()">
             </app-search-flight-button>
           </div>
       </div>

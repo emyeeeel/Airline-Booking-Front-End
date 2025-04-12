@@ -1,0 +1,23 @@
+<app-header [isHoveredByDefault]="true"></app-header>
+
+<div class="booking-wrapper">
+  <app-booking-progress [selectedIndex]="currentStepIndex"></app-booking-progress>
+      
+  <div class="title-section">
+    <div class="title-text">
+      <h2>Booking Summary</h2>
+      <p>Review your booking before proceeding to payment</p>
+    </div>
+  </div>
+
+  <div class="buttons-section">
+    <div class="buttons-container">
+      <button class="back-button" type="button">
+        <a href="/add-ons">Back</a>
+      </button>
+      <button class="continue-button" type="button">
+        <a href="#">Continue</a>
+      </button>
+    </div>
+  </div>
+</div>

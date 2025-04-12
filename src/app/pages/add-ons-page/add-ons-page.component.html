@@ -1,0 +1,34 @@
+<app-header [isHoveredByDefault]="true"></app-header>
+
+<div class="booking-wrapper">
+  <app-booking-progress [selectedIndex]="currentStepIndex"></app-booking-progress>
+      
+      <div class="title-section">
+        <div class="title-text">
+            <h2>Booking Summary</h2>
+            <p>Review your booking before proceeding to payment</p>
+        </div>
+      </div>
+
+      <div class="terms-confirmation">
+        <div class="terms-contents">
+            <input type="checkbox" required>
+            <span class="terms-text">
+              By clicking 'Continue' I confirm that I have read, understood, and accept the 
+              <a href="#" class="conditions-link">Conditions of Carriage</a>
+            </span></div>
+      </div>
+  
+      <div class="buttons-section">
+        <div class="buttons-container">
+            <button class="back-button" type="button">
+                <a href="/add-ons">Back</a>
+              </button>
+              <button class="continue-button" 
+                      type="button" 
+                      >
+                <a href="#">Continue</a>
+              </button>
+        </div>
+      </div>
+</div>

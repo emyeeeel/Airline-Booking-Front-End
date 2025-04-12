@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReturningListComponent } from './returning-list.component';
+import { AddOnsPageComponent } from './add-ons-page.component';
 
-describe('ReturningListComponent', () => {
-  let component: ReturningListComponent;
-  let fixture: ComponentFixture<ReturningListComponent>;
+describe('AddOnsPageComponent', () => {
+  let component: AddOnsPageComponent;
+  let fixture: ComponentFixture<AddOnsPageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReturningListComponent]
+      imports: [AddOnsPageComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ReturningListComponent);
+    fixture = TestBed.createComponent(AddOnsPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

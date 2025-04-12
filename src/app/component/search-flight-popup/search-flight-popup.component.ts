@@ -6,6 +6,7 @@ import { DatePickerComponent } from '../date-picker/date-picker.component';
 import { DestinationPickerComponent } from '../destination-picker/destination-picker.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { LoaderService } from '../../services/loader.service';
 
 @Component({
   selector: 'app-search-flight-popup',
@@ -26,7 +27,8 @@ export class SearchFlightPopupComponent {
 
   constructor(
     private flightSearchService: FlightSearchService,
-    private router: Router
+    private router: Router,
+    private loaderService: LoaderService
   ) {}
 
   get totalPassengers(): number {
@@ -85,6 +87,7 @@ export class SearchFlightPopupComponent {
       queryParams.returnDate = this.datePicker.selectedReturnDate.toISOString();
     }
 
+    
     this.router.navigate(['/flights'], { queryParams });
   }
 }

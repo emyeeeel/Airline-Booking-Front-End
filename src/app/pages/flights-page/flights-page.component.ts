@@ -12,10 +12,11 @@ import { BookingProgressComponent } from '../../component/booking-progress/booki
 import { FlightDetailsComponent } from '../../component/flight-details/flight-details.component';
 import { SearchFlightButtonComponent } from '../../component/search-flight-button/search-flight-button.component';
 import { FlightFooterComponent } from '../../component/flight-footer/flight-footer.component';
+import { LoaderComponent } from "../../component/loader/loader.component";
 
 @Component({
   selector: 'app-flights-page',
-  imports: [CommonModule, HeaderComponent, FooterComponent, BookingProgressComponent, FlightDetailsComponent, SearchFlightButtonComponent, FlightFooterComponent],
+  imports: [CommonModule, HeaderComponent, FooterComponent, BookingProgressComponent, FlightDetailsComponent, SearchFlightButtonComponent, FlightFooterComponent, LoaderComponent],
   templateUrl: './flights-page.component.html',
   styleUrl: './flights-page.component.scss'
 })
@@ -101,12 +102,14 @@ export class FlightsPageComponent implements OnInit {
     ).subscribe({
       next: ({ flights, params }) => {
         this.adults = Number(params['adults']) || 0;
-    this.children = Number(params['children']) || 0;
-    this.infants = Number(params['infants']) || 0;
-    this.totalPassengers = this.adults + this.children + this.infants;
+        this.children = Number(params['children']) || 0;
+        this.infants = Number(params['infants']) || 0;
+        this.totalPassengers = this.adults + this.children + this.infants;
         this.flights = flights;
         this.departingFlights = this.applyFilters(params['departure'], params['arrival']);
         this.returningFlights = this.applyFilters(params['arrival'], params['departure']);
+        this.selectedDepartingFlight;
+        this.selectedReturningFlight;
         this.setCityNames();
         this.loading = false;
       },
@@ -198,13 +201,27 @@ export class FlightsPageComponent implements OnInit {
     return `${parseInt(hours, 10)}h ${minutes.padStart(2, '0')}m`;
   }
 
-  navigateToBookingSummary(event?: Event) {
+  navigateToGuestDetails(event?: Event) {
     event?.preventDefault();
     if (!this.isButtonEnabled) return;
-    this.router.navigate(['/guest-details'], { 
-      queryParams: this.route.snapshot.queryParams 
+  
+    const currentParams = { ...this.route.snapshot.queryParams };
+  
+    if (this.selectedDepartingFlight) {
+      currentParams['departFlightNumber'] = this.selectedDepartingFlight.flight_number;
+      currentParams['departPrice'] = this.selectedDepartingFlight.price;
+    }
+  
+    if (this.flightType === 'Round-trip' && this.selectedReturningFlight) {
+      currentParams['returnFlightNumber'] = this.selectedReturningFlight.flight_number;
+      currentParams['returnPrice'] = this.selectedReturningFlight.price;
+    }
+  
+    this.router.navigate(['/guest-details'], {
+      queryParams: currentParams
     });
   }
+  
 
   get isButtonEnabled(): boolean {
     if (this.flightType === 'Round-trip') {

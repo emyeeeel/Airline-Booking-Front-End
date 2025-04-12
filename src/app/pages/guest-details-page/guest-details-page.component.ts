@@ -1,22 +1,30 @@
-import { Component } from '@angular/core';
-import { FooterComponent } from "../../component/footer/footer.component";
-import { FlightDetailsComponent } from "../../component/flight-details/flight-details.component";
-import { HeaderComponent } from "../../component/header/header.component";
-import { BookingProgressComponent } from "../../component/booking-progress/booking-progress.component";
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { FooterComponent } from '../../component/footer/footer.component';
+import { HeaderComponent } from '../../component/header/header.component';
+import { BookingProgressComponent } from '../../component/booking-progress/booking-progress.component';
+import { FlightDetailsComponent } from '../../component/flight-details/flight-details.component';
+import { SearchFlightButtonComponent } from '../../component/search-flight-button/search-flight-button.component';
+import { FlightFooterComponent } from '../../component/flight-footer/flight-footer.component';
+import { LoaderComponent } from '../../component/loader/loader.component';
 import { Flight } from '../../models/flight.model';
 import { City } from '../../models/city.model';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, map } from 'rxjs';
 import { isValid } from 'date-fns';
+import { GuestInfoComponent } from "../../component/guest-info/guest-info.component";
+import { ContactInfoComponent } from "../../component/contact-info/contact-info.component";
+import { Passenger } from '../../models/passenger.model';
+import { PassengerService } from '../../services/passenger.service';
 
 @Component({
-  selector: 'app-guest-details',
-  imports: [FooterComponent, FlightDetailsComponent, HeaderComponent, BookingProgressComponent],
-  templateUrl: './guest-details.component.html',
-  styleUrl: './guest-details.component.scss'
+  selector: 'app-guest-details-page',
+  imports: [CommonModule, HeaderComponent, FooterComponent, BookingProgressComponent, FlightDetailsComponent, SearchFlightButtonComponent, LoaderComponent, GuestInfoComponent, ContactInfoComponent],
+  templateUrl: './guest-details-page.component.html',
+  styleUrl: './guest-details-page.component.scss'
 })
-export class GuestDetailsComponent {
+export class GuestDetailsPageComponent implements OnInit {
   searchButtonText = "Continue";
   flights: Flight[] = [];
   departingFlights: Flight[] = [];
@@ -32,6 +40,7 @@ export class GuestDetailsComponent {
   selectedReturningFlight: Flight | null = null;
   currentStepIndex = 1;
   flightType = 'Round-trip'; 
+  isButtonEnabled = true;
 
   adults = 0;
   children = 0;
@@ -40,10 +49,14 @@ export class GuestDetailsComponent {
 
   private apiBase = 'http://127.0.0.1:8000/api/';
 
+  passengers: Passenger[] = [];
+  selectedPassenger?: Passenger;
+
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private passengerService: PassengerService
   ) { }
 
   onDepartingFlightSelect(flight: Flight): void {
@@ -58,6 +71,10 @@ export class GuestDetailsComponent {
 
   ngOnInit(): void {
     this.loadData();
+    this.passengerService.currentPassengers.subscribe(p => {
+      this.passengers = p;
+    });
+    console.log(this.route.snapshot.queryParams);
   }
 
   scrollTo(fragment: string): void {
@@ -98,13 +115,13 @@ export class GuestDetailsComponent {
     ).subscribe({
       next: ({ flights, params }) => {
         this.adults = Number(params['adults']) || 0;
-    this.children = Number(params['children']) || 0;
-    this.infants = Number(params['infants']) || 0;
-    this.totalPassengers = this.adults + this.children + this.infants;
+        this.children = Number(params['children']) || 0;
+        this.infants = Number(params['infants']) || 0;
+        this.totalPassengers = this.adults + this.children + this.infants;
         this.flights = flights;
         this.departingFlights = this.applyFilters(params['departure'], params['arrival']);
         this.returningFlights = this.applyFilters(params['arrival'], params['departure']);
-        this.setCityNames();
+        this.passengers; //not showing list
         this.loading = false;
       },
       error: (err) => {
@@ -195,16 +212,24 @@ export class GuestDetailsComponent {
     return `${parseInt(hours, 10)}h ${minutes.padStart(2, '0')}m`;
   }
 
-  navigateToBookingSummary(event?: Event) {
+  navigateToAddOns(event?: Event) {
     event?.preventDefault();
     if (!this.isButtonEnabled) return;
-    this.router.navigate(['/booking']);
-  }
 
-  get isButtonEnabled(): boolean {
-    if (this.flightType === 'Round-trip') {
-      return !!this.selectedDepartingFlight && !!this.selectedReturningFlight;
+    const currentParams = { ...this.route.snapshot.queryParams };
+
+    if (this.selectedDepartingFlight) {
+      currentParams['departFlightNumber'] = this.selectedDepartingFlight.flight_number;
+      currentParams['departPrice'] = this.selectedDepartingFlight.price;
     }
-    return !!this.selectedDepartingFlight;
+
+    if (this.flightType === 'Round-trip' && this.selectedReturningFlight) {
+      currentParams['returnFlightNumber'] = this.selectedReturningFlight.flight_number;
+      currentParams['returnPrice'] = this.selectedReturningFlight.price;
+    }
+
+    this.router.navigate(['/booking'], {
+      queryParams: currentParams
+    });
   }
 }
