@@ -74,8 +74,20 @@ app-flight-details{
   }
 
   &.selected {
+    position: relative; 
     border: 2px solid #2196F3;
-    background-color: #e3f2fd;
+
+    &::after{
+      content: "";
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      top: -10px;
+      right: -15px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-image: url(https://www.cebupacificair.com/assets/images/icon-check.png);
+    }
   }
 
   .depart-arrival-details {
@@ -327,7 +339,8 @@ app-flight-details{
   display: flex;
   gap: 20px;
   justify-content: flex-end;
-  margin: 30px 0;
+  margin: 30px 25px;
+  max-width: 1056px;
 
   button {
     width: 258px;

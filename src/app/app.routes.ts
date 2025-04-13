@@ -57,7 +57,7 @@ export const routes: Routes = [
     },
     {
         path: 'test',
-        component: FlightBundlesComponent
+        component: AddOnsPageComponent
     },
     {
         path: 'loader',

@@ -13,10 +13,11 @@ import { FlightDetailsComponent } from '../../component/flight-details/flight-de
 import { SearchFlightButtonComponent } from '../../component/search-flight-button/search-flight-button.component';
 import { FlightFooterComponent } from '../../component/flight-footer/flight-footer.component';
 import { LoaderComponent } from "../../component/loader/loader.component";
+import { FlightBundlesComponent } from '../../component/flight-bundles/flight-bundles.component';
 
 @Component({
   selector: 'app-flights-page',
-  imports: [CommonModule, HeaderComponent, FooterComponent, BookingProgressComponent, FlightDetailsComponent, SearchFlightButtonComponent, FlightFooterComponent, LoaderComponent],
+  imports: [CommonModule, HeaderComponent, FooterComponent, FlightBundlesComponent, BookingProgressComponent, FlightDetailsComponent, SearchFlightButtonComponent, FlightFooterComponent, LoaderComponent],
   templateUrl: './flights-page.component.html',
   styleUrl: './flights-page.component.scss'
 })
