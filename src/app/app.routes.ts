@@ -11,6 +11,12 @@ import { GuestDetailsPageComponent } from './pages/guest-details-page/guest-deta
 import { AddOnsPageComponent } from './pages/add-ons-page/add-ons-page.component';
 import { ConfirmationPageComponent } from './pages/confirmation-page/confirmation-page.component';
 import { FlightBundlesComponent } from './component/flight-bundles/flight-bundles.component';
+import { FlightCardComponent } from './component/flight-card/flight-card.component';
+import { FlightDatesComponent } from './component/flight-dates/flight-dates.component';
+import { CheapFlightsComponent } from './component/cheap-flights/cheap-flights.component';
+import { LatestStoriesComponent } from './component/latest-stories/latest-stories.component';
+import { AdvertisementComponent } from './component/advertisement/advertisement.component';
+import { TestComponent } from './component/test/test.component';
 
 
 export const routes: Routes = [

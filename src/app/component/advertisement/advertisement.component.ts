@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './advertisement.component.scss'
 })
 export class AdvertisementComponent {
-
+  
 }

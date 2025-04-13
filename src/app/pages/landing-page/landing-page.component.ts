@@ -15,10 +15,11 @@ import { SnsStoriesComponent } from '../../component/sns-stories/sns-stories.com
 import { AdvertisementComponent } from '../../component/advertisement/advertisement.component';
 import { CheapFlightsComponent } from '../../component/cheap-flights/cheap-flights.component';
 import { SearchFlightPopupComponent } from '../../component/search-flight-popup/search-flight-popup.component';
+import { LatestStoriesComponent } from '../../component/latest-stories/latest-stories.component';
 
 @Component({
   selector: 'app-landing-page',
-  imports: [RouterOutlet, HeaderComponent, SearchFlightPopupComponent, CheapFlightsComponent, DestinationPickerComponent, DatePickerComponent, SearchFlightButtonComponent, CommonModule, FormsModule, HomeFooterComponent, SnsStoriesComponent, AdvertisementComponent], 
+  imports: [RouterOutlet, HeaderComponent, LatestStoriesComponent, SearchFlightPopupComponent, CheapFlightsComponent, DestinationPickerComponent, DatePickerComponent, SearchFlightButtonComponent, CommonModule, FormsModule, HomeFooterComponent, SnsStoriesComponent, AdvertisementComponent], 
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss'
 })

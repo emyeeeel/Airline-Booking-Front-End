@@ -3,10 +3,10 @@ import { SearchFlightButtonComponent } from '../search-flight-button/search-flig
 
 @Component({
   selector: 'app-cheap-flights',
-  imports: [SearchFlightButtonComponent],
+  imports: [],
   templateUrl: './cheap-flights.component.html',
   styleUrl: './cheap-flights.component.scss'
 })
 export class CheapFlightsComponent {
-  @Input() seeMoreText = 'Search flights';
+
 }
